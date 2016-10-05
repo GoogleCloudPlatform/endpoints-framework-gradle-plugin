@@ -1,0 +1,109 @@
+/*
+ *  Copyright (c) 2016 Google Inc. All Right Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.tools.gradle.endpoints.server.task;
+
+import com.google.api.server.spi.tools.EndpointsTool;
+import com.google.api.server.spi.tools.GetDiscoveryDocAction;
+import com.google.common.collect.Lists;
+
+import org.gradle.api.DefaultTask;
+import org.gradle.api.plugins.JavaPluginConvention;
+import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.InputDirectory;
+import org.gradle.api.tasks.OutputDirectory;
+import org.gradle.api.tasks.SourceSet;
+import org.gradle.api.tasks.TaskAction;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+
+/**
+ * Endpoints task to download a discovery document from the endpoints service
+ */
+public class GenerateDiscoveryDocsTask extends DefaultTask {
+  // classes is only for detecting that the project has changed
+  private File classesDir;
+  private File discoveryDocDir;
+  private File webAppDir;
+  private List<String> serviceClasses;
+  private String format;
+
+  @InputDirectory
+  public File getClassesDir() {
+    return classesDir;
+  }
+
+  public void setClassesDir(File classesDir) {
+    this.classesDir = classesDir;
+  }
+
+  @OutputDirectory
+  public File getDiscoveryDocDir() {
+    return discoveryDocDir;
+  }
+
+  public void setDiscoveryDocDir(File discoveryDocDir) {
+    this.discoveryDocDir = discoveryDocDir;
+  }
+
+  @InputDirectory
+  public File getWebAppDir() {
+    return webAppDir;
+  }
+
+  public void setWebAppDir(File webAppDir) {
+    this.webAppDir = webAppDir;
+  }
+
+  @Input
+  public List<String> getServiceClasses() {
+    return serviceClasses;
+  }
+
+  public void setServiceClasses(List<String> serviceClasses) {
+    this.serviceClasses = serviceClasses;
+  }
+
+  @Input
+  public String getFormat() {
+    return format;
+  }
+
+  public void setFormat(String format) {
+    this.format = format;
+  }
+
+  @TaskAction
+  void generateDiscoveryDocs() throws Exception {
+    getProject().delete(discoveryDocDir);
+    discoveryDocDir.mkdirs();
+
+    String classpath = (getProject().getConvention().getPlugin(JavaPluginConvention.class)
+        .getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME).getRuntimeClasspath())
+        .getAsPath();
+
+    List<String> params = Lists.newArrayList(Arrays.asList(
+        GetDiscoveryDocAction.NAME,
+        "-o", discoveryDocDir.getPath(),
+        "-f", format,
+        "-cp", classpath,
+        "-w", webAppDir.getPath()));
+    params.addAll(getServiceClasses());
+
+    new EndpointsTool().execute(params.toArray(new String[params.size()]));
+  }
+}
