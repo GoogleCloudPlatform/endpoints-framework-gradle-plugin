@@ -1,0 +1,25 @@
+plugins {
+  id 'java'
+  id 'war'
+  id 'com.google.cloud.tools.endpoints-framework-client'
+}
+
+repositories {
+  mavenCentral()
+}
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+task wrapper(type: Wrapper) {
+  gradleVersion = '2.12'
+}
+
+endpointsClient {
+  discoveryDocs = [file('src/endpoints/testApi-v1-rest.discovery')]
+}
+
+
+dependencies {
+  compile "com.google.api-client:google-api-client:1.22.0"
+}

@@ -1,0 +1,33 @@
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+
+  dependencies {
+    classpath "com.google.cloud.tools:appengine-gradle-plugin:1.0.0"
+  }
+}
+
+plugins {
+  id 'java'
+  id 'war'
+  id 'com.google.cloud.tools.endpoints-framework-server'
+}
+
+apply plugin: 'com.google.cloud.tools.appengine'
+
+repositories {
+  mavenCentral()
+}
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+dependencies {
+  compile "com.google.endpoints:endpoints-framework:2.0.0-beta.8"
+  compile "com.google.appengine:appengine-api-1.0-sdk:+" // use latest
+  compile 'javax.servlet:servlet-api:2.5'
+  compile 'javax.inject:javax.inject:1'
+}
+
+
