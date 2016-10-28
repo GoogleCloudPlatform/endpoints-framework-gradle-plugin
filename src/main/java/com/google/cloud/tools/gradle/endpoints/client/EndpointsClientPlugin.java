@@ -18,7 +18,7 @@ package com.google.cloud.tools.gradle.endpoints.client;
 
 import com.google.cloud.tools.gradle.endpoints.client.task.GenerateClientLibrariesTask;
 import com.google.cloud.tools.gradle.endpoints.client.task.GenerateClientLibrarySourceTask;
-import com.google.cloud.tools.gradle.endpoints.client.task.GetDiscoveryDocsFromDependenciesTask;
+import com.google.cloud.tools.gradle.endpoints.client.task.ExtractDiscoveryDocZipsTask;
 
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
@@ -34,23 +34,37 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Plugin definition for Endpoints Clients (will generate source when applied)
- *
- * All tasks are hidden. Configuration of source discovery docs is from two ways:
+ * Plugin definition for Endpoints Clients. All tasks from this plugin are internal,
+ * it will automatically generate source into build/endpointsGenSrc
+ * (see {@link EndpointsClientExtension}) based on the user's configuration.
+ * <p/>
+ * Configuration of source discovery docs is from two ways:
+ * <p/>
  * 1. specify the location of the discovery doc with the extension
+ * <pre>
+ * {@code
  * endpointsClient {
  *   discoveryDocs = [file(path/to/xyz.discovery)]
  * }
+ * }
+ * </pre>
  * 2. depend directly on another project that has the endpoints server plugin
+ * <pre>
+ * {@code
  * dependencies {
  *   endpointsServer project(path: ":server", configuration: "discovery-docs");
  * }
- *
+ * }
+ * </pre>
  * Independent of what mechanism above is used, the user must still explicitly add
  * a dependency on the google api client library
+ * <pre>
+ * {@code
  * dependencies {
  *   compile "com.google.api-client:google-api-client:+"
  * }
+ * }
+ * </pre>
  */
 public class EndpointsClientPlugin implements Plugin<Project> {
 
@@ -88,9 +102,9 @@ public class EndpointsClientPlugin implements Plugin<Project> {
   // extract discovery docs from "endpointsServer" configurations
   private void createExtractServerDiscoveryDocsTask() {
     project.getTasks().create(EXTRACT_SERVER_DISCOVERY_DOCS_TASK,
-        GetDiscoveryDocsFromDependenciesTask.class, new Action<GetDiscoveryDocsFromDependenciesTask>() {
+        ExtractDiscoveryDocZipsTask.class, new Action<ExtractDiscoveryDocZipsTask>() {
           @Override
-          public void execute(final GetDiscoveryDocsFromDependenciesTask extractDiscoveryDocs) {
+          public void execute(final ExtractDiscoveryDocZipsTask extractDiscoveryDocs) {
             extractDiscoveryDocs.setDescription("_internal");
             // make sure we depend on the server configuration build tasks, so those get run
             // before we run our task to get the discovery docs

@@ -27,6 +27,9 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.HashMap;
 
+/**
+ * Task to populate a generated source folder of client lib code
+ */
 public class GenerateClientLibrarySourceTask extends DefaultTask {
   private File clientLibDir;
   private File generatedSrcDir;
