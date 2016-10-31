@@ -84,7 +84,7 @@ public class GenerateClientLibrariesTask extends DefaultTask {
     List<String> params = Lists.newArrayList(Arrays.asList(
         GenClientLibAction.NAME,
         "-l", "java",
-        "-bs", "maven",
+        "-bs", "gradle",
         "-o", clientLibraryDir.getAbsolutePath()));
 
     params.add(discoveryDoc.getAbsolutePath());
