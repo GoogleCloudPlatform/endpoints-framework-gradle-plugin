@@ -17,7 +17,6 @@
 package com.google.cloud.tools.gradle.endpoints.client;
 
 import com.google.api.client.util.Preconditions;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.util.Arrays;

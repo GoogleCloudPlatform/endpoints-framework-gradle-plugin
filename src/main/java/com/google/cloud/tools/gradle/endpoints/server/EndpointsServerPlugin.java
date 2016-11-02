@@ -19,7 +19,7 @@ package com.google.cloud.tools.gradle.endpoints.server;
 
 import com.google.cloud.tools.gradle.endpoints.server.task.GenerateClientLibsTask;
 import com.google.cloud.tools.gradle.endpoints.server.task.GenerateDiscoveryDocsTask;
-
+import java.io.File;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -28,8 +28,6 @@ import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.plugins.WarPluginConvention;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.bundling.Zip;
-
-import java.io.File;
 
 /**
  * Plugin definition for Endpoints Servers (on App Engine) for generation of

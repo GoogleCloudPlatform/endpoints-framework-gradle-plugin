@@ -17,8 +17,10 @@ package com.google.cloud.tools.gradle.endpoints.server.task;
 
 import com.google.api.server.spi.tools.EndpointsTool;
 import com.google.api.server.spi.tools.GetDiscoveryDocAction;
-import com.google.common.collect.Lists;
-
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.Input;
@@ -26,10 +28,6 @@ import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskAction;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Endpoints task to download a discovery document from the endpoints service
@@ -96,7 +94,7 @@ public class GenerateDiscoveryDocsTask extends DefaultTask {
         .getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME).getRuntimeClasspath())
         .getAsPath();
 
-    List<String> params = Lists.newArrayList(Arrays.asList(
+    List<String> params = new ArrayList<>(Arrays.asList(
         GetDiscoveryDocAction.NAME,
         "-o", discoveryDocDir.getPath(),
         "-f", format,

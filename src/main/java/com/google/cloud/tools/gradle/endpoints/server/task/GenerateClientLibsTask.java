@@ -18,8 +18,10 @@ package com.google.cloud.tools.gradle.endpoints.server.task;
 
 import com.google.api.server.spi.tools.EndpointsTool;
 import com.google.api.server.spi.tools.GetClientLibAction;
-import com.google.common.collect.Lists;
-
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.Input;
@@ -27,10 +29,6 @@ import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskAction;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Endpoints task to download a client library document from the endpoints service, useful for
@@ -90,7 +88,7 @@ public class GenerateClientLibsTask extends DefaultTask {
         .getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME).getRuntimeClasspath())
         .getAsPath();
 
-    List<String> params = Lists.newArrayList(Arrays.asList(
+    List<String> params = new ArrayList<>(Arrays.asList(
         GetClientLibAction.NAME,
         "-o", clientLibDir.getPath(),
         "-cp", classpath,

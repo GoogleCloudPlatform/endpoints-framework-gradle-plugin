@@ -16,10 +16,13 @@
 
 package com.google.cloud.tools.gradle.endpoints.client;
 
+import com.google.cloud.tools.gradle.endpoints.client.task.ExtractDiscoveryDocZipsTask;
 import com.google.cloud.tools.gradle.endpoints.client.task.GenerateClientLibrariesTask;
 import com.google.cloud.tools.gradle.endpoints.client.task.GenerateClientLibrarySourceTask;
-import com.google.cloud.tools.gradle.endpoints.client.task.ExtractDiscoveryDocZipsTask;
-
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -27,11 +30,6 @@ import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * Plugin definition for Endpoints Clients. All tasks from this plugin are internal,
@@ -152,8 +150,7 @@ public class EndpointsClientPlugin implements Plugin<Project> {
     for (File discoveryDoc : extension.getDiscoveryDocs()) {
       if (discoveryDoc.isDirectory()) {
         discoveryDocs.addAll(DiscoveryDocUtil.findDiscoveryDocsInDirectory(discoveryDoc));
-      }
-      else {
+      } else {
         discoveryDocs.add(discoveryDoc);
       }
     }
