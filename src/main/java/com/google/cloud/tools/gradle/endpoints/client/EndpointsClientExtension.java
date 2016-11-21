@@ -17,6 +17,8 @@
 
 package com.google.cloud.tools.gradle.endpoints.client;
 
+import org.gradle.api.Project;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,12 +31,14 @@ public class EndpointsClientExtension {
   private final File genSrcDir;
   private final File clientLibDir;
   private final File genDiscoveryDocsDir;
+  private final Project project;
   private List<File> discoveryDocs;
 
-  public EndpointsClientExtension(File buildDir) {
-    genSrcDir = new File(buildDir, "endpointsGenSrc");
-    clientLibDir = new File(buildDir, "endpointsClientLibs");
-    genDiscoveryDocsDir = new File(buildDir, "endpointsDiscoveryDocsFromDependencies");
+  public EndpointsClientExtension(Project project) {
+    this.project = project;
+    genSrcDir = new File(project.getBuildDir(), "endpointsGenSrc");
+    clientLibDir = new File(project.getBuildDir(), "endpointsClientLibs");
+    genDiscoveryDocsDir = new File(project.getBuildDir(), "endpointsDiscoveryDocsFromDependencies");
 
     discoveryDocs = new ArrayList<>();
   }
@@ -55,7 +59,8 @@ public class EndpointsClientExtension {
     return discoveryDocs;
   }
 
-  public void setDiscoveryDocs(List<File> discoveryDocs) {
-    this.discoveryDocs = discoveryDocs;
+  public void setDiscoveryDocs(List<Object> discoveryDocs) {
+    this.discoveryDocs.clear();
+    this.discoveryDocs.addAll(project.files(discoveryDocs).getFiles());
   }
 }

@@ -58,7 +58,7 @@ public class EndpointsServerPlugin implements Plugin<Project> {
 
   private void createExtension() {
     extension = project.getExtensions()
-        .create(ENDPOINTS_SERVER_EXTENSION, EndpointsServerExtension.class, project.getBuildDir());
+        .create(ENDPOINTS_SERVER_EXTENSION, EndpointsServerExtension.class, project);
   }
 
   private void createDiscoverDocConfiguration() {
