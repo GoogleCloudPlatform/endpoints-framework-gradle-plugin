@@ -16,10 +16,10 @@ task wrapper(type: Wrapper) {
 }
 
 endpointsClient {
-  discoveryDocs = [file('src/endpoints/testApi-v1-rest.discovery')]
+  discoveryDocs = ['src/endpoints/testApi-v1-rest.discovery']
 }
 
 
 dependencies {
-  compile "com.google.api-client:google-api-client:1.22.0"
+  compile "com.google.api-client:google-api-client:+"
 }

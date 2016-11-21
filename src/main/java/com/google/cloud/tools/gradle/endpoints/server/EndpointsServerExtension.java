@@ -17,6 +17,8 @@
 
 package com.google.cloud.tools.gradle.endpoints.server;
 
+import org.gradle.api.Project;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +33,9 @@ public class EndpointsServerExtension {
   private List<String> serviceClasses;
   private String format;
 
-  public EndpointsServerExtension(File buildDir) {
-    discoveryDocDir = new File(buildDir, "endpointsDiscoveryDocs");
-    clientLibDir = new File(buildDir, "endpointsClientLibs");
+  public EndpointsServerExtension(Project project) {
+    discoveryDocDir = new File(project.getBuildDir(), "endpointsDiscoveryDocs");
+    clientLibDir = new File(project.getBuildDir(), "endpointsClientLibs");
     format = "rest";
     serviceClasses = new ArrayList<>();
   }

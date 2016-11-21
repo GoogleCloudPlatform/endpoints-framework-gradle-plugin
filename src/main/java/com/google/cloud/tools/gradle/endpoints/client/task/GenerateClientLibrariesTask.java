@@ -17,7 +17,7 @@ package com.google.cloud.tools.gradle.endpoints.client.task;
 
 import com.google.api.server.spi.tools.EndpointsTool;
 import com.google.api.server.spi.tools.GenClientLibAction;
-import com.google.cloud.tools.gradle.endpoints.client.DiscoveryDocUtil;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 import org.gradle.api.DefaultTask;
@@ -27,6 +27,8 @@ import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,7 +38,7 @@ import java.util.List;
 public class GenerateClientLibrariesTask extends DefaultTask {
   private File clientLibraryDir;
   private List<File> discoveryDocs;
-  private File linkedDiscoveryDocs;
+  private File generatedDiscoveryDocsDir;
 
   @OutputDirectory
   public File getClientLibraryDir() {
@@ -53,16 +55,25 @@ public class GenerateClientLibrariesTask extends DefaultTask {
   }
 
   public void setDiscoveryDocs(List<File> discoveryDocs) {
-    this.discoveryDocs = discoveryDocs;
+    List<File> expandedDiscoveryDocs = new ArrayList<>();
+    for (File discoveryDoc : discoveryDocs) {
+      if (discoveryDoc.isDirectory()) {
+        expandedDiscoveryDocs.addAll(findDiscoveryDocsInDirectory(discoveryDoc));
+      }
+      else {
+        expandedDiscoveryDocs.add(discoveryDoc);
+      }
+    }
+    this.discoveryDocs = expandedDiscoveryDocs;
   }
 
   @InputDirectory
-  public File getLinkedDiscoveryDocs() {
-    return linkedDiscoveryDocs;
+  public File getGeneratedDiscoveryDocsDir() {
+    return generatedDiscoveryDocsDir;
   }
 
-  public void setGeneratedDiscoveryDocs(File linkedDiscoveryDocs) {
-    this.linkedDiscoveryDocs = linkedDiscoveryDocs;
+  public void setGeneratedDiscoveryDocs(File generatedDiscoveryDocsDir) {
+    this.generatedDiscoveryDocsDir = generatedDiscoveryDocsDir;
   }
 
   @TaskAction
@@ -74,10 +85,9 @@ public class GenerateClientLibrariesTask extends DefaultTask {
       runEndpointsTools(discoveryDoc);
     }
 
-    for (File discoveryDoc : DiscoveryDocUtil.findDiscoveryDocsInDirectory(linkedDiscoveryDocs)) {
+    for (File discoveryDoc : findDiscoveryDocsInDirectory(generatedDiscoveryDocsDir)) {
       runEndpointsTools(discoveryDoc);
     }
-
   }
 
   private void runEndpointsTools(File discoveryDoc) throws Exception {
@@ -89,5 +99,17 @@ public class GenerateClientLibrariesTask extends DefaultTask {
 
     params.add(discoveryDoc.getAbsolutePath());
     new EndpointsTool().execute(params.toArray(new String[params.size()]));
+  }
+
+  public static List<File> findDiscoveryDocsInDirectory(File discoveryDocDirectory) {
+    Preconditions.checkArgument(discoveryDocDirectory.isDirectory());
+
+    File[] discoveryDocs = discoveryDocDirectory.listFiles(new FileFilter() {
+      @Override
+      public boolean accept(File pathname) {
+        return pathname.getName().endsWith(".discovery");
+      }
+    });
+    return Arrays.asList(discoveryDocs);
   }
 }

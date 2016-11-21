@@ -19,10 +19,7 @@ package com.google.cloud.tools.gradle.endpoints.client;
 import com.google.cloud.tools.gradle.endpoints.client.task.ExtractDiscoveryDocZipsTask;
 import com.google.cloud.tools.gradle.endpoints.client.task.GenerateClientLibrariesTask;
 import com.google.cloud.tools.gradle.endpoints.client.task.GenerateClientLibrarySourceTask;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -30,6 +27,9 @@ import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
+
+import java.io.File;
+import java.util.Collection;
 
 /**
  * Plugin definition for Endpoints Clients. All tasks from this plugin are internal,
@@ -87,7 +87,7 @@ public class EndpointsClientPlugin implements Plugin<Project> {
 
   private void createExtension() {
     extension = project.getExtensions()
-        .create(ENDPOINTS_CLIENT_EXTENSION, EndpointsClientExtension.class, project.getBuildDir());
+        .create(ENDPOINTS_CLIENT_EXTENSION, EndpointsClientExtension.class, project);
   }
 
   private void createConfiguration() {
@@ -136,25 +136,12 @@ public class EndpointsClientPlugin implements Plugin<Project> {
               @Override
               public void execute(Project project) {
                 genClientLibs.setClientLibraryDir(extension.getClientLibDir());
-                genClientLibs.setDiscoveryDocs(getDiscoveryDocs());
+                genClientLibs.setDiscoveryDocs(extension.getDiscoveryDocs());
                 genClientLibs.setGeneratedDiscoveryDocs(extension.getGenDiscoveryDocsDir());
               }
             });
           }
         });
-  }
-
-  // find discovery docs from files and directories
-  private List<File> getDiscoveryDocs() {
-    List<File> discoveryDocs = new ArrayList<File>();
-    for (File discoveryDoc : extension.getDiscoveryDocs()) {
-      if (discoveryDoc.isDirectory()) {
-        discoveryDocs.addAll(DiscoveryDocUtil.findDiscoveryDocsInDirectory(discoveryDoc));
-      } else {
-        discoveryDocs.add(discoveryDoc);
-      }
-    }
-    return discoveryDocs;
   }
 
   private void createGenerateClientLibSrcTask() {
