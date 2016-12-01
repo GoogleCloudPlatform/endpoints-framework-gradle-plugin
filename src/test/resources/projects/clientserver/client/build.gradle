@@ -8,13 +8,8 @@ repositories {
   mavenCentral()
 }
 
-
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
-
-task wrapper(type: Wrapper) {
-  gradleVersion = '2.12'
-}
 
 dependencies {
   endpointsServer project(path: ":server", configuration: "discovery-docs")
