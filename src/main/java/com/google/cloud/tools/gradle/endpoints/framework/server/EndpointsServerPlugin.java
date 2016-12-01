@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Google Inc. All Right Reserved.
+ *  Copyright (c) 2016 Google Inc. All Right Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,13 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
-package com.google.cloud.tools.gradle.endpoints.server;
+package com.google.cloud.tools.gradle.endpoints.framework.server;
 
-import com.google.cloud.tools.gradle.endpoints.server.task.GenerateClientLibsTask;
-import com.google.cloud.tools.gradle.endpoints.server.task.GenerateDiscoveryDocsTask;
+import com.google.cloud.tools.gradle.endpoints.framework.server.task.GenerateClientLibsTask;
+import com.google.cloud.tools.gradle.endpoints.framework.server.task.GenerateDiscoveryDocsTask;
+
 import java.io.File;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;

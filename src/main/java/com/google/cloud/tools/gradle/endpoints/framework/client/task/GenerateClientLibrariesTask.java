@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.cloud.tools.gradle.endpoints.client.task;
+package com.google.cloud.tools.gradle.endpoints.framework.client.task;
 
 import com.google.api.server.spi.tools.EndpointsTool;
 import com.google.api.server.spi.tools.GenClientLibAction;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.tools.gradle.endpoints.client.task;
+package com.google.cloud.tools.gradle.endpoints.framework.client.task;
 
 import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.google.cloud.tools.gradle.endpoints.client;
+package com.google.cloud.tools.gradle.endpoints.framework.client;
 
-import com.google.cloud.tools.gradle.endpoints.client.task.ExtractDiscoveryDocZipsTask;
-import com.google.cloud.tools.gradle.endpoints.client.task.GenerateClientLibrariesTask;
-import com.google.cloud.tools.gradle.endpoints.client.task.GenerateClientLibrarySourceTask;
+import com.google.cloud.tools.gradle.endpoints.framework.client.task.ExtractDiscoveryDocZipsTask;
+import com.google.cloud.tools.gradle.endpoints.framework.client.task.GenerateClientLibrariesTask;
+import com.google.cloud.tools.gradle.endpoints.framework.client.task.GenerateClientLibrarySourceTask;
 
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
