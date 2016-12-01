@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.tools.gradle.endpoints.server.task;
+package com.google.cloud.tools.gradle.endpoints.framework.server.task;
 
 import com.google.api.server.spi.tools.EndpointsTool;
 import com.google.api.server.spi.tools.GetClientLibAction;
