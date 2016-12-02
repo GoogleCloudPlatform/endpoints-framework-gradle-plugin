@@ -11,10 +11,6 @@ repositories {
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
-task wrapper(type: Wrapper) {
-  gradleVersion = '2.12'
-}
-
 endpointsClient {
   discoveryDocs = ['src/endpoints/testApi-v1-rest.discovery']
 }
