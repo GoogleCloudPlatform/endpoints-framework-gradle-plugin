@@ -17,7 +17,7 @@ sourceCompatibility = JavaVersion.VERSION_1_7
 targetCompatibility = JavaVersion.VERSION_1_7
 
 group = 'com.google.cloud.tools'
-version = '0.0.1-SNAPSHOT'
+version = '0.1.0-SNAPSHOT'
 
 repositories {
   mavenCentral()
@@ -29,8 +29,8 @@ repositories {
 dependencies {
   compile localGroovy()
   compile gradleApi()
-  compile "com.google.endpoints:endpoints-framework:2.0.0-beta.8"
-  compile "com.google.endpoints:endpoints-framework-tools:2.0.0-beta.8"
+  compile "com.google.endpoints:endpoints-framework:2.0.0-beta.9"
+  compile "com.google.endpoints:endpoints-framework-tools:2.0.0-beta.9"
   compile "com.google.guava:guava:19.0"
 
   testCompile 'commons-io:commons-io:2.4'
