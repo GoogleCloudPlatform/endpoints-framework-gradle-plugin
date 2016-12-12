@@ -9,16 +9,20 @@ This Gradle plugin provides tasks and configurations to build and connect Endpoi
 
 # How to use
 
-The plugin JAR needs to be defined in the classpath of your build script. It is directly available on Maven Central. Alternatively, you can download it from GitHub and deploy it to your local repository. The following code snippet shows an example on how to retrieve it from Maven Central:
+The plugin JAR needs to be defined in the classpath of your build script. Alternatively, you can download it from GitHub and deploy it to your local repository. The following code snippet shows an example on how to retrieve it from the pre-release maven sonatype snapshots repository :
 
 ```Groovy
 buildscript {
   repositories {
     mavenCentral()
+    // sonatype snapshot repository for pre-release plugin
+    maven {
+      url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
   }
 
   dependencies {
-    classpath 'com.google.cloud.tools:endpoints-framework-gradle-plugin:0.1.0'
+    classpath 'com.google.cloud.tools:endpoints-framework-gradle-plugin:0.1.0-SNAPSHOT'
   }
 }
 ```
