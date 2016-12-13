@@ -19,6 +19,9 @@ package com.google.cloud.tools.gradle.endpoints.framework.client;
 import com.google.cloud.tools.gradle.endpoints.framework.client.task.ExtractDiscoveryDocZipsTask;
 import com.google.cloud.tools.gradle.endpoints.framework.client.task.GenerateClientLibrariesTask;
 import com.google.cloud.tools.gradle.endpoints.framework.client.task.GenerateClientLibrarySourceTask;
+import com.google.cloud.tools.gradle.endpoints.framework.server.EndpointsServerPlugin;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
@@ -27,6 +30,7 @@ import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
+import org.gradle.api.tasks.compile.JavaCompile;
 
 import java.io.File;
 import java.util.Collection;
@@ -50,7 +54,7 @@ import java.util.Collection;
  * <pre>
  * {@code
  * dependencies {
- *   endpointsServer project(path: ":server", configuration: "discovery-docs");
+ *   endpointsServer project(path: ":server", configuration: {@value EndpointsServerPlugin#ARTIFACT_CONFIGURATION});
  * }
  * }
  * </pre>
@@ -66,9 +70,9 @@ import java.util.Collection;
  */
 public class EndpointsClientPlugin implements Plugin<Project> {
 
-  private static final String GENERATE_CLIENT_LIBRARY_TASK = "_endpointsClientLibs";
-  private static final String GENERATE_CLIENT_LIBRARY_SRC_TASK = "_endpointsClientGenSrc";
-  private static final String EXTRACT_SERVER_DISCOVERY_DOCS_TASK = "_extractServerDiscoveryDocs";
+  public static final String GENERATE_CLIENT_LIBRARY_TASK = "_endpointsClientLibs";
+  public static final String GENERATE_CLIENT_LIBRARY_SRC_TASK = "_endpointsClientGenSrc";
+  public static final String EXTRACT_SERVER_DISCOVERY_DOCS_TASK = "_extractServerDiscoveryDocs";
 
   public static final String ENDPOINTS_CLIENT_EXTENSION = "endpointsClient";
   public static final String ENDPOINTS_SERVER_CONFIGURATION = "endpointsServer";
@@ -92,7 +96,8 @@ public class EndpointsClientPlugin implements Plugin<Project> {
 
   private void createConfiguration() {
     project.getConfigurations().create(ENDPOINTS_SERVER_CONFIGURATION)
-        .setDescription("endpointsServer project(path: ':xyz', configuration: 'discovery-docs')")
+        .setDescription("endpointsServer project(path: ':xyz', configuration: '" +
+            EndpointsServerPlugin.ARTIFACT_CONFIGURATION + "')")
         .setVisible(false);
 
   }
@@ -163,19 +168,30 @@ public class EndpointsClientPlugin implements Plugin<Project> {
               }
             });
 
-    // since we are generating sources add the gen-src directory to the main java sourceset
-    project.afterEvaluate(new Action<Project>() {
-      @Override
-      public void execute(Project project) {
-        project.getTasks().getByPath(JavaPlugin.COMPILE_JAVA_TASK_NAME)
-            .dependsOn(GENERATE_CLIENT_LIBRARY_SRC_TASK);
+    if (project.getExtensions().findByName("android") != null) {
+      project.apply(ImmutableMap.of("plugin", "com.google.cloud.tools.endpoints-framework-android-client"));
+    }
+    else {
+      // this is for standard java applications
+      // since we are generating sources add the gen-src directory to the main java sourceset
+      project.afterEvaluate(new Action<Project>() {
+        @Override
+        public void execute(final Project project) {
+          project.getTasks().withType(JavaCompile.class, new Action<JavaCompile>() {
+            @Override
+            public void execute(JavaCompile javaCompile) {
+              javaCompile.dependsOn(GENERATE_CLIENT_LIBRARY_SRC_TASK);
+            }
+          });
 
-        JavaPluginConvention java = project.getConvention().getPlugin(JavaPluginConvention.class);
-        SourceSetContainer sourceSets = java.getSourceSets();
-        SourceSet mainSrc = sourceSets.getByName("main");
-        mainSrc.getJava().srcDir(extension.getGenSrcDir());
-      }
-    });
+          JavaPluginConvention java = project.getConvention().getPlugin(JavaPluginConvention.class);
+          SourceSetContainer sourceSets = java.getSourceSets();
+          SourceSet mainSrc = sourceSets.getByName("main");
+          mainSrc.getJava().srcDir(extension.getGenSrcDir());
+        }
+      });
+    }
   }
+
 }
 

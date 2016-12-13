@@ -23,6 +23,7 @@ import java.io.File;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.plugins.WarPluginConvention;
@@ -33,14 +34,15 @@ import org.gradle.api.tasks.bundling.Zip;
  * Plugin definition for Endpoints Servers (on App Engine) for generation of
  * client libraries and discovery docs.
  *
- * Also provides the artifact "discovery-docs" that is a zip of all the discovery
- * docs that this server exposes (as defined in web.xml)
+ * Also provides the artifact "{@value ARTIFACT_CONFIGURATION}" that is a zip
+ * of all the discovery docs that this server exposes (as defined in web.xml)
  */
 public class EndpointsServerPlugin implements Plugin<Project> {
 
   public static final String GENERATE_DISCOVERY_DOC_TASK = "endpointsDiscoveryDocs";
   public static final String GENERATE_CLINT_LIBS_TASK = "endpointsClientLibs";
-  public static final String ENDPOINTS_SERVER_EXTENSION = "endpointsServer";
+  public static final String SERVER_EXTENSION = "endpointsServer";
+  public static final String ARTIFACT_CONFIGURATION = "endpoints";
 
   private static final String APP_ENGINE_ENDPOINTS = "App Engine Endpoints";
 
@@ -58,19 +60,20 @@ public class EndpointsServerPlugin implements Plugin<Project> {
 
   private void createExtension() {
     extension = project.getExtensions()
-        .create(ENDPOINTS_SERVER_EXTENSION, EndpointsServerExtension.class, project);
+        .create(SERVER_EXTENSION, EndpointsServerExtension.class, project);
   }
 
   private void createDiscoverDocConfiguration() {
     project.afterEvaluate(new Action<Project>() {
       @Override
       public void execute(Project project) {
-        project.getConfigurations().create("discovery-docs");
+        Configuration c = project.getConfigurations().create(ARTIFACT_CONFIGURATION);
         Zip discoveryDocArchive = project.getTasks().create("_zipDiscoveryDocs", Zip.class);
         discoveryDocArchive.dependsOn(GENERATE_DISCOVERY_DOC_TASK);
         discoveryDocArchive.from(extension.getDiscoveryDocDir());
         discoveryDocArchive.setArchiveName(project.getName() + "-" + "discoveryDocs.zip");
-        project.getArtifacts().add("discovery-docs", discoveryDocArchive);
+
+        project.getArtifacts().add(ARTIFACT_CONFIGURATION, discoveryDocArchive);
       }
     });
 

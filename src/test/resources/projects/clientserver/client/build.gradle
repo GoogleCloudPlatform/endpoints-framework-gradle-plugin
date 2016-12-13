@@ -12,6 +12,6 @@ sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 dependencies {
-  endpointsServer project(path: ":server", configuration: "discovery-docs")
+  endpointsServer project(path: ":server", configuration: "endpoints")
   compile "com.google.api-client:google-api-client:+"
 }

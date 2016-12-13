@@ -90,7 +90,7 @@ an `endpoints-framework-server` module for this to work.
 
 ```
 dependencies {
-  endpointsServer project(path: ":server", configuration: "discovery-docs")
+  endpointsServer project(path: ":server", configuration: "endpoints")
 }
 ```
 

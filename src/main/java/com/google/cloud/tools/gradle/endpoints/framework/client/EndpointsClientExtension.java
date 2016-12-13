@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class EndpointsClientExtension {
 
-  private final File genSrcDir;
+  private File genSrcDir;
   private final File clientLibDir;
   private final File genDiscoveryDocsDir;
   private final Project project;
@@ -44,6 +44,10 @@ public class EndpointsClientExtension {
 
   public File getGenSrcDir() {
     return genSrcDir;
+  }
+
+  public void setGenSrcDir(File genSrcDir) {
+    this.genSrcDir = genSrcDir;
   }
 
   public File getClientLibDir() {
