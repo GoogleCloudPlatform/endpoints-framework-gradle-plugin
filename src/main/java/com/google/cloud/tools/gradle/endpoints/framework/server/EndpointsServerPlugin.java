@@ -67,7 +67,7 @@ public class EndpointsServerPlugin implements Plugin<Project> {
     project.afterEvaluate(new Action<Project>() {
       @Override
       public void execute(Project project) {
-        Configuration c = project.getConfigurations().create(ARTIFACT_CONFIGURATION);
+        project.getConfigurations().create(ARTIFACT_CONFIGURATION);
         Zip discoveryDocArchive = project.getTasks().create("_zipDiscoveryDocs", Zip.class);
         discoveryDocArchive.dependsOn(GENERATE_DISCOVERY_DOC_TASK);
         discoveryDocArchive.from(extension.getDiscoveryDocDir());

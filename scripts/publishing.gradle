@@ -3,7 +3,7 @@ apply plugin: 'com.bmuschko.nexus'
 modifyPom {
   project {
     name 'Endpoints Framework Gradle Plugin'
-    description 'This Gradle plugin provides tasks and configurations to build Google Cloud Endpoints Framework projects'
+    description 'This Gradle plugin provides tasks and configurations to generate Google Cloud Endpoints Framework client code and discovery docs'
     url 'https://github.com/GoogleCloudPlatform/endpoints-framework-gradle-plugin'
     inceptionYear '2016'
 
