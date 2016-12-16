@@ -34,7 +34,7 @@ import org.gradle.api.tasks.bundling.Zip;
  * Plugin definition for Endpoints Servers (on App Engine) for generation of
  * client libraries and discovery docs.
  *
- * Also provides the artifact "{@value ARTIFACT_CONFIGURATION}" that is a zip
+ * Also provides the artifact "{@value #ARTIFACT_CONFIGURATION}" that is a zip
  * of all the discovery docs that this server exposes (as defined in web.xml)
  */
 public class EndpointsServerPlugin implements Plugin<Project> {
