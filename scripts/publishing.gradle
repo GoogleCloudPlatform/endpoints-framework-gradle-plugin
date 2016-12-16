@@ -2,15 +2,15 @@ apply plugin: 'com.bmuschko.nexus'
 
 modifyPom {
   project {
-    name 'Google Cloud Platform: App Gradle Plugin'
-    description 'Gradle plugin that provides tasks for uploading, running and managing Google App Engine projects.'
-    url 'https://github.com/GoogleCloudPlatform/app-gradle-plugin'
+    name 'Endpoints Framework Gradle Plugin'
+    description 'This Gradle plugin provides tasks and configurations to generate Google Cloud Endpoints Framework client code and discovery docs'
+    url 'https://github.com/GoogleCloudPlatform/endpoints-framework-gradle-plugin'
     inceptionYear '2016'
 
     scm {
-      url 'https://github.com/GoogleCloudPlatform/app-gradle-plugin'
-      connection 'scm:https://github.com/GoogleCloudPlatform/app-gradle-plugin.git'
-      developerConnection 'scm:git://github.com/GoogleCloudPlatform/app-gradle-plugin.git'
+      url 'https://github.com/GoogleCloudPlatform/endpoints-framework-gradle-plugin'
+      connection 'scm:https://github.com/GoogleCloudPlatform/endpoints-framework-gradle-plugin.git'
+      developerConnection 'scm:git://github.com/GoogleCloudPlatform/endpoints-framework-gradle-plugin.git'
     }
 
     licenses {
