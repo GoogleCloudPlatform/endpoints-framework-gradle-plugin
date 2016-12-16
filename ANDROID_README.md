@@ -15,24 +15,16 @@ Make changes in the backend/appengine module
 
 **`<project>/backend/build.gradle`**
 
-Add in the snapshot repository to grab the endpoints plugin snapshot and
-remove the old appengine plugin jar and add in the new jars
+Remove the old appengine plugin jar and add in the new appengine and endpoints jars
 ```gradle
 buildscript {
-   ...
-  repositories {
   ...
-    //add this temporarily while endpoints plugin only available in snapshots
-    maven {
-      url "https://oss.sonatype.org/content/repositories/snapshots"
-    }
-  }
   dependencies {
     // delete this
     // classpath 'com.google.appengine:gradle-appengine-plugin:1.9.48'
       
     // add these 
-    classpath "com.google.cloud.tools:endpoints-framework-gradle-plugin:0.1.0-SNAPSHOT"
+    classpath "com.google.cloud.tools:endpoints-framework-gradle-plugin:1.0.0-beta"
     classpath 'com.google.cloud.tools:appengine-gradle-plugin:1.0.0'
   }
 }
@@ -81,20 +73,13 @@ Make changes in the android client
 
 **`<project>/app/build.gradle`**
 
-Add in the snapshot repository to grab the endpoints plugin snapshot and
-add in the new jar
+Add in the new endpoints jar
 ```gradle
 buildscript {
-  repositories {
-    ...
-    //add this temporarily while endpoints plugin only available in snapshots
-    maven {
-      url "https://oss.sonatype.org/content/repositories/snapshots"
-    }
-  }
+  ...
   dependencies {
     // add this
-    classpath "com.google.cloud.tools:endpoints-framework-gradle-plugin:0.1.0-SNAPSHOT"
+    classpath "com.google.cloud.tools:endpoints-framework-gradle-plugin:1.0.0-beta"
   }
 }
 ```
