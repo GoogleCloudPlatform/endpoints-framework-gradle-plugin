@@ -25,7 +25,7 @@ import javax.inject.Named;
 @Api(
     name = "testApi",
     version = "v1",
-    namespace = @ApiNamespace(ownerDomain = "example.com", ownerName = "example.com", packagePath = "")
+    namespace = @ApiNamespace(ownerDomain = "example.com", ownerName = "example.com", packagePath = "example.com")
 )
 public class Test {
 

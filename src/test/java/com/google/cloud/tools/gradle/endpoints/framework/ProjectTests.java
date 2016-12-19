@@ -67,9 +67,15 @@ public class ProjectTests {
         .withPluginClasspath()
         .withArguments("endpointsClientLibs", "endpointsDiscoveryDocs")
         .build();
-    Assert.assertEquals(1,
-        new File(testProjectDir.getRoot(), "/build/endpointsClientLibs").listFiles().length);
-    Assert.assertEquals(1,
-        new File(testProjectDir.getRoot(), "/build/endpointsDiscoveryDocs").listFiles().length);
+    // client lib geneneration actually generates a discovery doc as well, so check the
+    // above directory for that
+    File clientLibRoot = new File(testProjectDir.getRoot(), "/build/endpointsClientLibs");
+    Assert.assertEquals(2, clientLibRoot.listFiles().length);
+    Assert.assertTrue(new File(clientLibRoot, "testApi-v1-rest.discovery").exists());
+    Assert.assertTrue(new File(clientLibRoot, "testApi-v1-java.zip").exists());
+
+    File discoveryDocRoot = new File(testProjectDir.getRoot(), "/build/endpointsDiscoveryDocs");
+    Assert.assertEquals(1, discoveryDocRoot.listFiles().length);
+    Assert.assertTrue(new File(discoveryDocRoot, "testApi-v1-rest.discovery").exists());
   }
 }
