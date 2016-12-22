@@ -30,12 +30,10 @@ public class EndpointsServerExtension {
   private final File discoveryDocDir;
   private final File clientLibDir;
   private List<String> serviceClasses;
-  private String format;
 
   public EndpointsServerExtension(Project project) {
     discoveryDocDir = new File(project.getBuildDir(), "endpointsDiscoveryDocs");
     clientLibDir = new File(project.getBuildDir(), "endpointsClientLibs");
-    format = "rest";
     serviceClasses = new ArrayList<>();
   }
 
@@ -53,13 +51,5 @@ public class EndpointsServerExtension {
 
   public void setServiceClasses(List<String> serviceClasses) {
     this.serviceClasses = serviceClasses;
-  }
-
-  public String getFormat() {
-    return format;
-  }
-
-  public void setFormat(String format) {
-    this.format = format;
   }
 }

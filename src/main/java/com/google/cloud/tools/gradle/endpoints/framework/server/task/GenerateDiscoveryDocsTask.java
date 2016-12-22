@@ -76,15 +76,6 @@ public class GenerateDiscoveryDocsTask extends DefaultTask {
     this.serviceClasses = serviceClasses;
   }
 
-  @Input
-  public String getFormat() {
-    return format;
-  }
-
-  public void setFormat(String format) {
-    this.format = format;
-  }
-
   @TaskAction
   void generateDiscoveryDocs() throws Exception {
     getProject().delete(discoveryDocDir);
@@ -97,7 +88,6 @@ public class GenerateDiscoveryDocsTask extends DefaultTask {
     List<String> params = new ArrayList<>(Arrays.asList(
         GetDiscoveryDocAction.NAME,
         "-o", discoveryDocDir.getPath(),
-        "-f", format,
         "-cp", classpath,
         "-w", webAppDir.getPath()));
     params.addAll(getServiceClasses());
