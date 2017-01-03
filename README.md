@@ -18,7 +18,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.google.cloud.tools:endpoints-framework-gradle-plugin:1.0.0-beta'
+    classpath 'com.google.cloud.tools:endpoints-framework-gradle-plugin:1.0.0-beta2'
   }
 }
 ```
@@ -35,7 +35,6 @@ The plugin exposes the following server side goals
 * `endpointsDiscoveryDocs` - generate discovery documents
 
 The plugin exposes server side configuration through the `endpointsServer` extension
-* `format` - The output format of discovery documents [rest or rpc]
 * `serviceClasses` - List of service classes (optional), this can be inferred from web.xml
 
 #### Usage
