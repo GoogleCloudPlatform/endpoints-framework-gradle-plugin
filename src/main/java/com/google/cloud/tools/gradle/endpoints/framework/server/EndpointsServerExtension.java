@@ -27,11 +27,14 @@ import java.util.List;
  */
 public class EndpointsServerExtension {
 
+  private final Project project;
   private final File discoveryDocDir;
-  private final File clientLibDir;
+
+  private File clientLibDir;
   private List<String> serviceClasses;
 
   public EndpointsServerExtension(Project project) {
+    this.project = project;
     discoveryDocDir = new File(project.getBuildDir(), "endpointsDiscoveryDocs");
     clientLibDir = new File(project.getBuildDir(), "endpointsClientLibs");
     serviceClasses = new ArrayList<>();
@@ -45,6 +48,10 @@ public class EndpointsServerExtension {
     return clientLibDir;
   }
 
+  public void setClientLibDir(Object clientLibDir) {
+    this.clientLibDir = project.file(clientLibDir);
+  }
+
   public List<String> getServiceClasses() {
     return serviceClasses;
   }
@@ -52,4 +59,5 @@ public class EndpointsServerExtension {
   public void setServiceClasses(List<String> serviceClasses) {
     this.serviceClasses = serviceClasses;
   }
+
 }
