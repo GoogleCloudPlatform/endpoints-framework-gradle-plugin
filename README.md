@@ -36,6 +36,7 @@ The plugin exposes the following server side goals
 
 The plugin exposes server side configuration through the `endpointsServer` extension
 * `serviceClasses` - List of service classes (optional), this can be inferred from web.xml
+* `clientLibDir` - Output directory for generated client libraries
 
 #### Usage
 Make sure your web.xml is [configured to expose your endpoints](https://cloud.google.com/endpoints/docs/frameworks/java/required_files) correctly.
