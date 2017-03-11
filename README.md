@@ -18,7 +18,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.google.cloud.tools:endpoints-framework-gradle-plugin:1.0.0-beta4'
+    classpath 'com.google.cloud.tools:endpoints-framework-gradle-plugin:1.0.0-beta5'
   }
 }
 ```
