@@ -81,8 +81,7 @@ public class GenerateClientLibsTask extends DefaultTask {
   @TaskAction
   void generateClientLibs() throws Exception {
 
-    getProject().delete(clientLibDir);
-    clientLibDir.mkdirs();
+    // This action intentionally does not clean the output directory
 
     String classpath = (getProject().getConvention().getPlugin(JavaPluginConvention.class)
         .getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME).getRuntimeClasspath())

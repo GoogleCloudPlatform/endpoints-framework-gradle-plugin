@@ -33,7 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Endpoints task to download a discovery document from the endpoints service
+ * Endpoints task to download a client library from the endpoints service
  */
 public class GenerateClientLibrariesTask extends DefaultTask {
   private File clientLibraryDir;
