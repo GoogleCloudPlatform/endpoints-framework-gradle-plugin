@@ -81,8 +81,11 @@ public class GenerateClientLibsTask extends DefaultTask {
   @TaskAction
   void generateClientLibs() throws Exception {
 
-    getProject().delete(clientLibDir);
-    clientLibDir.mkdirs();
+    // We do *not* delete the output directory for this task, and we do *not* ensure that is clean.
+    // If the user specifies an output directory that is outside the gradle buildDir we don't want
+    // to accidentally delete anything. Since this task is not a dependency for any other task,
+    // having builds write new versions of client libraries to the output directory doesn't really
+    // affect anything.
 
     String classpath = (getProject().getConvention().getPlugin(JavaPluginConvention.class)
         .getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME).getRuntimeClasspath())
