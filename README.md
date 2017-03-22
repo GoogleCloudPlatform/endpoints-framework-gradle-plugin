@@ -23,7 +23,7 @@ buildscript {
 }
 ```
 
-###Server
+### Server
 In your Gradle App Engine Java app, add the following plugin to your build.gradle:
 
 ```Groovy
@@ -60,6 +60,13 @@ In your client Java app, add the following plugin to your build.gradle:
 apply plugin: 'com.google.cloud.tools.endpoints-framework-client'
 ```
 
+If you are using Android, you will need to apply the android extensions
+
+```Groovy
+apply plugin: 'com.google.cloud.tools.endpoints-framework-client'
+apply plugin: 'com.google.cloud.tools.endpoints-framework-android-client'
+```
+
 The plugin exposes **no tasks**. Applying the plugin will generate sources according
 to your configuration
 
@@ -72,28 +79,36 @@ The plugin exposes intermodule endpoints configuration through a custom dependen
 #### Usage (from discovery docs)
 In your build.gradle define the location of the discovery document
 
-```
+```Groovy
 endpointsClient {
   discoveryDocs = ['src/endpoints/myApi-v1-rest.discovery']
 }
 ```
 
-building your project should inject the correct generated source into your compile path
+building your project should inject the correct generated source into your compile path.
 
 #### Usage (from server module in project)
 In your build.gradle define the correct project dependency, the server project must be
 an `endpoints-framework-server` module for this to work.
 
-```
+```Groovy
 dependencies {
   endpointsServer project(path: ":server", configuration: "endpoints")
 }
 ```
 
-building your project should inject the correct generated source into your compile path
+building your project should inject the correct generated source into your compile path.
 
 You can use a combination of discovery doc files and server dependencies when building
-a client module
+a client module, make sure you include all the necessary dependencies for building your
+endpoints client
+
+```Groovy
+dependencies {
+  compile 'com.google.api-client:google-api-client:<version>' // for standard java projects
+  compile 'com.google.api-client:google-api-client-android:<version>' exclude module: 'httpclient' // for android projects
+}
+```
 
 ## Contributing
 
