@@ -46,8 +46,8 @@ public class EndpointsClientExtension {
     return genSrcDir;
   }
 
-  public void setGenSrcDir(File genSrcDir) {
-    this.genSrcDir = genSrcDir;
+  public void setGenSrcDir(Object genSrcDir) {
+    this.genSrcDir = project.file(genSrcDir);
   }
 
   public File getClientLibDir() {
