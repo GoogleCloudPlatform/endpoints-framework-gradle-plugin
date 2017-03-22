@@ -60,13 +60,6 @@ In your client Java app, add the following plugin to your build.gradle:
 apply plugin: 'com.google.cloud.tools.endpoints-framework-client'
 ```
 
-If you are using Android, you will need to apply the android extensions
-
-```Groovy
-apply plugin: 'com.google.cloud.tools.endpoints-framework-client'
-apply plugin: 'com.google.cloud.tools.endpoints-framework-android-client'
-```
-
 The plugin exposes **no tasks**. Applying the plugin will generate sources according
 to your configuration
 
