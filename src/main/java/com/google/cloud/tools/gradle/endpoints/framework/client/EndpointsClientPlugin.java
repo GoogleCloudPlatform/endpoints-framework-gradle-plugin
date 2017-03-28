@@ -30,6 +30,7 @@ import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
+import org.gradle.api.tasks.TaskDependency;
 import org.gradle.api.tasks.compile.JavaCompile;
 
 import java.io.File;
@@ -109,12 +110,6 @@ public class EndpointsClientPlugin implements Plugin<Project> {
           @Override
           public void execute(final ExtractDiscoveryDocZipsTask extractDiscoveryDocs) {
             extractDiscoveryDocs.setDescription("_internal");
-            // make sure we depend on the server configuration build tasks, so those get run
-            // before we run our task to get the discovery docs
-            extractDiscoveryDocs.dependsOn(
-                project.getConfigurations().getByName(ENDPOINTS_SERVER_CONFIGURATION)
-                    .getBuildDependencies());
-
             // iterate through the configuration and get all artifacts (discovery doc zips)
             project.afterEvaluate(new Action<Project>() {
               @Override
@@ -127,6 +122,18 @@ public class EndpointsClientPlugin implements Plugin<Project> {
             });
           }
         });
+
+    // make sure we depend on the server configuration build tasks, so those get run
+    // before we run our task to get the discovery docs, for some reason with the android plugin,
+    // this needs to be done outside the task configuration block above.
+    project.afterEvaluate(new Action<Project>() {
+      @Override
+      public void execute(Project project) {
+        project.getTasks().getByName(EXTRACT_SERVER_DISCOVERY_DOCS_TASK).dependsOn(
+            project.getConfigurations().getByName(ENDPOINTS_SERVER_CONFIGURATION)
+                .getBuildDependencies());
+      }
+    });
   }
 
   private void createGenerateClientLibTask() {

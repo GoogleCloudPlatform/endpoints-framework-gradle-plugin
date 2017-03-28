@@ -36,8 +36,16 @@ public class AndroidEndpointsClientPlugin implements Plugin<Project> {
 
     // register our source generating task and outputs with the android model
     def genSrcTask = project.tasks.getByName(EndpointsClientPlugin.GENERATE_CLIENT_LIBRARY_SRC_TASK)
-    android.applicationVariants.all { variant ->
-      variant.registerJavaGeneratingTask(genSrcTask, endpointsClient.genSrcDir)
+    if (android.hasProperty("applicationVariants")) {
+      android.applicationVariants.all { variant ->
+        variant.registerJavaGeneratingTask(genSrcTask, endpointsClient.genSrcDir)
+      }
+    }
+
+    if (android.hasProperty("libraryVariants")) {
+      android.libraryVariants.all {variant ->
+        variant.registerJavaGeneratingTask(genSrcTask, endpointsClient.genSrcDir)
+      }
     }
   }
 }
