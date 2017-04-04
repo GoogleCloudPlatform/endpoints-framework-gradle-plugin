@@ -62,7 +62,7 @@ public class EndpointsClientExtension {
     return discoveryDocs;
   }
 
-  public void setDiscoveryDocs(List<Object> discoveryDocs) {
+  public void setDiscoveryDocs(Object discoveryDocs) {
     this.discoveryDocs.clear();
     this.discoveryDocs.addAll(project.files(discoveryDocs).getFiles());
   }
