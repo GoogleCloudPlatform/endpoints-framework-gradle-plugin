@@ -30,16 +30,20 @@ public class EndpointsClientExtension {
   private File genSrcDir;
   private final File clientLibDir;
   private final File genDiscoveryDocsDir;
+  private final File genOpenApiDocsDir;
   private final Project project;
   private List<File> discoveryDocs;
+  private List<File> openApiDocs;
 
   public EndpointsClientExtension(Project project) {
     this.project = project;
     genSrcDir = new File(project.getBuildDir(), "endpointsGenSrc");
     clientLibDir = new File(project.getBuildDir(), "endpointsClientLibs");
     genDiscoveryDocsDir = new File(project.getBuildDir(), "endpointsDiscoveryDocsFromDependencies");
+    genOpenApiDocsDir = new File(project.getBuildDir(), "endpointsOpenApiDocsFromDependencies");
 
     discoveryDocs = new ArrayList<>();
+    openApiDocs = new ArrayList<>();
   }
 
   public File getGenSrcDir() {
@@ -54,6 +58,10 @@ public class EndpointsClientExtension {
     return clientLibDir;
   }
 
+  public File getGenOpenApiDocsDir() {
+    return genOpenApiDocsDir;
+  }
+
   public File getGenDiscoveryDocsDir() {
     return genDiscoveryDocsDir;
   }
@@ -62,8 +70,17 @@ public class EndpointsClientExtension {
     return discoveryDocs;
   }
 
+  public List<File> getOpenApiDocs() {
+    return openApiDocs;
+  }
+
   public void setDiscoveryDocs(Object discoveryDocs) {
     this.discoveryDocs.clear();
     this.discoveryDocs.addAll(project.files(discoveryDocs).getFiles());
+  }
+
+  public void setOpenApiDocs(Object openApiDocs) {
+    this.openApiDocs.clear();
+    this.openApiDocs.addAll(project.files(openApiDocs).getFiles());
   }
 }

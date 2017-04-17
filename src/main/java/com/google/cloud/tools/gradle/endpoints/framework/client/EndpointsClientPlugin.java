@@ -21,16 +21,13 @@ import com.google.cloud.tools.gradle.endpoints.framework.client.task.GenerateCli
 import com.google.cloud.tools.gradle.endpoints.framework.client.task.GenerateClientLibrarySourceTask;
 import com.google.cloud.tools.gradle.endpoints.framework.server.EndpointsServerPlugin;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
-import org.gradle.api.tasks.TaskDependency;
 import org.gradle.api.tasks.compile.JavaCompile;
 
 import java.io.File;
@@ -135,6 +132,10 @@ public class EndpointsClientPlugin implements Plugin<Project> {
       }
     });
   }
+
+
+
+
 
   private void createGenerateClientLibTask() {
     project.getTasks().create(GENERATE_CLIENT_LIBRARY_TASK, GenerateClientLibrariesTask.class,

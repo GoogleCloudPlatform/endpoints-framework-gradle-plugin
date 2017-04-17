@@ -59,14 +59,17 @@ public class ProjectTests {
 
   @Test
   public void testServer() throws IOException, URISyntaxException {
-    FileUtils.copyDirectory(
-        new File(getClass().getClassLoader().getResource("projects/server").toURI()),
-        testProjectDir.getRoot());
-    BuildResult buildResult = GradleRunner.create()
-        .withProjectDir(testProjectDir.getRoot())
-        .withPluginClasspath()
-        .withArguments("endpointsClientLibs", "endpointsDiscoveryDocs")
-        .build();
+
+      FileUtils.copyDirectory(
+              new File(getClass().getClassLoader().getResource("projects/server").toURI()),
+              testProjectDir.getRoot());
+
+      BuildResult buildResult = GradleRunner.create()
+              .withProjectDir(testProjectDir.getRoot())
+              .withPluginClasspath()
+              .withArguments("endpointsClientLibs", "endpointsDiscoveryDocs", "endpointsOpenApiDocs")
+              .build();
+
     // client lib geneneration actually generates a discovery doc as well, so check the
     // above directory for that
     File clientLibRoot = new File(testProjectDir.getRoot(), "/build/endpointsClientLibs");
@@ -76,5 +79,9 @@ public class ProjectTests {
     File discoveryDocRoot = new File(testProjectDir.getRoot(), "/build/endpointsDiscoveryDocs");
     Assert.assertTrue(new File(discoveryDocRoot, "testApi-v1-rest.discovery").exists());
     Assert.assertEquals(1, discoveryDocRoot.listFiles().length);
+
+    File openApiDocRoot = new File(testProjectDir.getRoot(), "/build/endpointsOpenApiDocs");
+    Assert.assertTrue(new File(openApiDocRoot, "openapi.json").exists());
+    Assert.assertEquals(1, openApiDocRoot.listFiles().length);
   }
 }

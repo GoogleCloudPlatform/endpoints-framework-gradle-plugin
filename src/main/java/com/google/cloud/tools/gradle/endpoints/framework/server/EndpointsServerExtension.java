@@ -29,6 +29,7 @@ public class EndpointsServerExtension {
 
   private final Project project;
   private final File discoveryDocDir;
+  private final File openApiDocDir;
 
   private File clientLibDir;
   private List<String> serviceClasses;
@@ -36,12 +37,17 @@ public class EndpointsServerExtension {
   public EndpointsServerExtension(Project project) {
     this.project = project;
     discoveryDocDir = new File(project.getBuildDir(), "endpointsDiscoveryDocs");
+    openApiDocDir = new File(project.getBuildDir(), "endpointsOpenApiDocs");
     clientLibDir = new File(project.getBuildDir(), "endpointsClientLibs");
     serviceClasses = new ArrayList<>();
   }
 
   public File getDiscoveryDocDir() {
     return discoveryDocDir;
+  }
+
+  public File getOpenApiDocDir() {
+    return openApiDocDir;
   }
 
   public File getClientLibDir() {
