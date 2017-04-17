@@ -33,6 +33,7 @@ apply plugin: 'com.google.cloud.tools.endpoints-framework-server'
 The plugin exposes the following server side goals
 * `endpointsClientLibs` - generate client libraries
 * `endpointsDiscoveryDocs` - generate discovery documents
+* `endpointsOpenApiDocs` - generate openapi documents
 
 The plugin exposes server side configuration through the `endpointsServer` extension
 * `serviceClasses` - List of service classes (optional), this can be inferred from web.xml
@@ -51,6 +52,10 @@ Client libraries will be written to `build/endpointsClientLibs`
 $> gradle endpointsDiscoveryDocs
 ```
 Discovery documents will be written to `build/endpointsDiscoveryDocs`
+```
+$> gradle endpointsOpenApiDocs
+```
+OpenApi documents will be written to `build/endpointsOpenApiDocs`
 
 
 ###Client
