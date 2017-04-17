@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 public class ProjectTests {
-
   @Rule
   public final TemporaryFolder testProjectDir = new TemporaryFolder();
 
