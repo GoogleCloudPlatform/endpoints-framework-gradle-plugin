@@ -35,7 +35,6 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 public class ProjectTests {
-
   private static final String DEFAULT_URL = "https://myapi.appspot.com/_ah/api";
   private static final String DEFAULT_URL_PREFIX = "public static final String DEFAULT_ROOT_URL = ";
   private static final String DEFAULT_URL_VARIABLE =
@@ -45,6 +44,7 @@ public class ProjectTests {
       "build/endpointsDiscoveryDocs/testApi-v1-rest.discovery";
   private static final String API_JAVA_FILE_PATH =
       "testApi/src/main/java/com/example/testApi/TestApi.java";
+  private static final String OPEN_API_DOC_PATH = "build/openApiDocs/openapi.json";
 
   @Rule public final TemporaryFolder testProjectDir = new TemporaryFolder();
 
@@ -83,7 +83,7 @@ public class ProjectTests {
         GradleRunner.create()
             .withProjectDir(testProjectDir.getRoot())
             .withPluginClasspath()
-            .withArguments("endpointsClientLibs", "endpointsDiscoveryDocs")
+            .withArguments("endpointsClientLibs", "endpointsDiscoveryDocs", "endpointsOpenApi")
             .build();
 
     File discoveryDoc = new File(testProjectDir.getRoot(), DISC_DOC_PATH);
@@ -97,6 +97,12 @@ public class ProjectTests {
     Assert.assertEquals(1, clientLib.getParentFile().listFiles().length);
     String apiJavaFile = getFileContentsInZip(clientLib, API_JAVA_FILE_PATH);
     Assert.assertThat(apiJavaFile, CoreMatchers.containsString(DEFAULT_URL_VARIABLE));
+
+    File openApiDoc = new File(testProjectDir.getRoot(), OPEN_API_DOC_PATH);
+    Assert.assertTrue(openApiDoc.exists());
+    Assert.assertEquals(1, openApiDoc.getParentFile().listFiles().length);
+    String openApi = Files.toString(discoveryDoc, Charsets.UTF_8);
+    Assert.assertThat(openApi, CoreMatchers.containsString(DEFAULT_URL));
   }
 
   @Test
