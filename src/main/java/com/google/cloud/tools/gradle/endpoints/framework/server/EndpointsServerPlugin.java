@@ -79,85 +79,83 @@ public class EndpointsServerPlugin implements Plugin<Project> {
         project.getArtifacts().add(ARTIFACT_CONFIGURATION, discoveryDocArchive);
       }
     });
-
   }
 
   private void createGenerateDiscoveryDocsTask() {
     project.getTasks().create(GENERATE_DISCOVERY_DOC_TASK, GenerateDiscoveryDocsTask.class,
-        new Action<GenerateDiscoveryDocsTask>() {
-          @Override
-          public void execute(final GenerateDiscoveryDocsTask genDiscoveryDocs) {
-            genDiscoveryDocs.setDescription("Generate endpoints discovery documents");
-            genDiscoveryDocs.setGroup(APP_ENGINE_ENDPOINTS);
-            genDiscoveryDocs.dependsOn(JavaPlugin.CLASSES_TASK_NAME);
+      new Action<GenerateDiscoveryDocsTask>() {
+        @Override
+        public void execute(final GenerateDiscoveryDocsTask genDiscoveryDocs) {
+          genDiscoveryDocs.setDescription("Generate endpoints discovery documents");
+          genDiscoveryDocs.setGroup(APP_ENGINE_ENDPOINTS);
+          genDiscoveryDocs.dependsOn(JavaPlugin.CLASSES_TASK_NAME);
 
-            project.afterEvaluate(new Action<Project>() {
-              @Override
-              public void execute(Project project) {
-                File classesDir = project.getConvention().getPlugin(JavaPluginConvention.class)
-                    .getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME).getOutput()
-                    .getClassesDir();
-                genDiscoveryDocs.setClassesDir(classesDir);
-                genDiscoveryDocs.setDiscoveryDocDir(extension.getDiscoveryDocDir());
-                genDiscoveryDocs.setServiceClasses(extension.getServiceClasses());
-                genDiscoveryDocs.setWebAppDir(
-                    project.getConvention().getPlugin(WarPluginConvention.class).getWebAppDir());
-              }
-            });
-          }
-        });
+          project.afterEvaluate(new Action<Project>() {
+            @Override
+            public void execute(Project project) {
+              File classesDir = project.getConvention().getPlugin(JavaPluginConvention.class)
+                  .getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME).getOutput()
+                  .getClassesDir();
+              genDiscoveryDocs.setClassesDir(classesDir);
+              genDiscoveryDocs.setDiscoveryDocDir(extension.getDiscoveryDocDir());
+              genDiscoveryDocs.setServiceClasses(extension.getServiceClasses());
+              genDiscoveryDocs.setWebAppDir(
+                  project.getConvention().getPlugin(WarPluginConvention.class).getWebAppDir());
+            }
+          });
+        }
+      });
   }
-
 
   private void createGenerateOpenApiDocsTask() {
     project.getTasks().create(GENERATE_OPENAPI_DOC_TASK, GenerateOpenApiDocsTask.class,
-            new Action<GenerateOpenApiDocsTask>() {
-              @Override
-              public void execute(final GenerateOpenApiDocsTask genOpenApiDocs) {
-                genOpenApiDocs.setDescription("Generate endpoints openapi documents");
-                genOpenApiDocs.setGroup(APP_ENGINE_ENDPOINTS);
-                genOpenApiDocs.dependsOn(JavaPlugin.CLASSES_TASK_NAME);
+      new Action<GenerateOpenApiDocsTask>() {
+        @Override
+        public void execute(final GenerateOpenApiDocsTask genOpenApiDocs) {
+          genOpenApiDocs.setDescription("Generate endpoints openapi documents");
+          genOpenApiDocs.setGroup(APP_ENGINE_ENDPOINTS);
+          genOpenApiDocs.dependsOn(JavaPlugin.CLASSES_TASK_NAME);
 
-                project.afterEvaluate(new Action<Project>() {
-                  @Override
-                  public void execute(Project project) {
-                    File classesDir = project.getConvention().getPlugin(JavaPluginConvention.class)
-                            .getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME).getOutput()
-                            .getClassesDir();
-                    genOpenApiDocs.setClassesDir(classesDir);
-                    genOpenApiDocs.setOpenApiDocDir(extension.getOpenApiDocDir());
-                    genOpenApiDocs.setServiceClasses(extension.getServiceClasses());
-                    genOpenApiDocs.setWebAppDir(
-                            project.getConvention().getPlugin(WarPluginConvention.class).getWebAppDir());
-                  }
-                });
-              }
-            });
+          project.afterEvaluate(new Action<Project>() {
+            @Override
+            public void execute(Project project) {
+              File classesDir = project.getConvention().getPlugin(JavaPluginConvention.class)
+                      .getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME).getOutput()
+                      .getClassesDir();
+              genOpenApiDocs.setClassesDir(classesDir);
+              genOpenApiDocs.setOpenApiDocDir(extension.getOpenApiDocDir());
+              genOpenApiDocs.setServiceClasses(extension.getServiceClasses());
+              genOpenApiDocs.setWebAppDir(
+                      project.getConvention().getPlugin(WarPluginConvention.class).getWebAppDir());
+            }
+          });
+        }
+      });
   }
+
   private void createGenerateClientLibsTask() {
     project.getTasks().create(GENERATE_CLINT_LIBS_TASK, GenerateClientLibsTask.class,
-        new Action<GenerateClientLibsTask>() {
-          @Override
-          public void execute(final GenerateClientLibsTask genClientLibs) {
-            genClientLibs.setDescription("Generate endpoints client libraries");
-            genClientLibs.setGroup(APP_ENGINE_ENDPOINTS);
-            genClientLibs.dependsOn(JavaPlugin.CLASSES_TASK_NAME);
+      new Action<GenerateClientLibsTask>() {
+        @Override
+        public void execute(final GenerateClientLibsTask genClientLibs) {
+          genClientLibs.setDescription("Generate endpoints client libraries");
+          genClientLibs.setGroup(APP_ENGINE_ENDPOINTS);
+          genClientLibs.dependsOn(JavaPlugin.CLASSES_TASK_NAME);
 
-            project.afterEvaluate(new Action<Project>() {
-              @Override
-              public void execute(Project project) {
-                File classesDir = project.getConvention().getPlugin(JavaPluginConvention.class)
-                    .getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME).getOutput()
-                    .getClassesDir();
-                genClientLibs.setClassesDir(classesDir);
-                genClientLibs.setClientLibDir(extension.getClientLibDir());
-                genClientLibs.setServiceClasses(extension.getServiceClasses());
-                genClientLibs.setWebAppDir(
-                    project.getConvention().getPlugin(WarPluginConvention.class).getWebAppDir());
-              }
-            });
-          }
-        });
+          project.afterEvaluate(new Action<Project>() {
+            @Override
+            public void execute(Project project) {
+              File classesDir = project.getConvention().getPlugin(JavaPluginConvention.class)
+                  .getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME).getOutput()
+                  .getClassesDir();
+              genClientLibs.setClassesDir(classesDir);
+              genClientLibs.setClientLibDir(extension.getClientLibDir());
+              genClientLibs.setServiceClasses(extension.getServiceClasses());
+              genClientLibs.setWebAppDir(
+                  project.getConvention().getPlugin(WarPluginConvention.class).getWebAppDir());
+            }
+          });
+        }
+      });
   }
 }
-

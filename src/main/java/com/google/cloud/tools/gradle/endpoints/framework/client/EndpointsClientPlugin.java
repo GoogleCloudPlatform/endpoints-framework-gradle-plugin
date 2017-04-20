@@ -202,4 +202,3 @@ public class EndpointsClientPlugin implements Plugin<Project> {
   }
 
 }
-
