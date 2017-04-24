@@ -24,8 +24,8 @@ buildscript {
     // classpath 'com.google.appengine:gradle-appengine-plugin:1.9.48'
       
     // add these 
-    classpath "com.google.cloud.tools:endpoints-framework-gradle-plugin:1.0.0-beta"
-    classpath 'com.google.cloud.tools:appengine-gradle-plugin:1.0.0'
+    classpath "com.google.cloud.tools:endpoints-framework-gradle-plugin:1.0.7-beta"
+    classpath 'com.google.cloud.tools:appengine-gradle-plugin:1.3.0'
   }
 }
 ```
@@ -50,7 +50,7 @@ dependencies {
   // compile 'com.google.appengine:appengine-endpoints-deps:1.9.48'
   ... 
   // add these (inject needs to be explicitly included now)
-  compile 'com.google.endpoints:endpoints-framework:2.0.0-beta.9'
+  compile 'com.google.endpoints:endpoints-framework:2.0.5'
   compile 'javax.inject:javax.inject:1'
   ...
 }
@@ -79,7 +79,7 @@ buildscript {
   ...
   dependencies {
     // add this
-    classpath "com.google.cloud.tools:endpoints-framework-gradle-plugin:1.0.0-beta"
+    classpath "com.google.cloud.tools:endpoints-framework-gradle-plugin:1.3.0"
   }
 }
 ```
@@ -105,7 +105,7 @@ dependencies {
 ```
 
 
-Finally to deal with a buildscript classpath issue (see: [gradle forums](https://discuss.gradle.org/t/version-is-root-build-gradle-buildscript-is-overriding-subproject-buildscript-dependency-versions/20746/2))
+Finally, if you see this, to deal with a buildscript classpath issue (see: [gradle forums](https://discuss.gradle.org/t/version-is-root-build-gradle-buildscript-is-overriding-subproject-buildscript-dependency-versions/20746/2))
 Make changes in the root project
 
 **`<project>/build.gradle`**
