@@ -53,7 +53,7 @@ $> gradle endpointsDiscoveryDocs
 Discovery documents will be written to `build/endpointsDiscoveryDocs`
 
 
-###Client
+### Client
 In your client Java app, add the following plugin to your build.gradle:
 
 ```Groovy
