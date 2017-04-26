@@ -34,8 +34,8 @@ import org.gradle.api.tasks.TaskAction;
 
 /**
  * Endpoints task to download a client library document from the endpoints service, useful for
- * projects not in the same gradle configuration. For clients and servers that are part of the
- * same gradle project, use EndpointsClientPlugin
+ * projects not in the same gradle configuration. For clients and servers that are part of the same
+ * gradle project, use EndpointsClientPlugin
  */
 public class GenerateClientLibsTask extends DefaultTask {
   // classesDir is only for detecting that the project has changed
@@ -101,17 +101,29 @@ public class GenerateClientLibsTask extends DefaultTask {
     // having builds write new versions of client libraries to the output directory doesn't really
     // affect anything.
 
-    String classpath = (getProject().getConvention().getPlugin(JavaPluginConvention.class)
-        .getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME).getRuntimeClasspath())
-        .getAsPath();
+    String classpath =
+        (getProject()
+                .getConvention()
+                .getPlugin(JavaPluginConvention.class)
+                .getSourceSets()
+                .getByName(SourceSet.MAIN_SOURCE_SET_NAME)
+                .getRuntimeClasspath())
+            .getAsPath();
 
-    List<String> params = new ArrayList<>(Arrays.asList(
-        GetClientLibAction.NAME,
-        "-o", clientLibDir.getPath(),
-        "-cp", classpath,
-        "-l", "java",
-        "-bs", "gradle",
-        "-w", webAppDir.getPath()));
+    List<String> params =
+        new ArrayList<>(
+            Arrays.asList(
+                GetClientLibAction.NAME,
+                "-o",
+                clientLibDir.getPath(),
+                "-cp",
+                classpath,
+                "-l",
+                "java",
+                "-bs",
+                "gradle",
+                "-w",
+                webAppDir.getPath()));
     if (!Strings.isNullOrEmpty(hostname)) {
       params.add("-h");
       params.add(hostname);
@@ -120,5 +132,4 @@ public class GenerateClientLibsTask extends DefaultTask {
 
     new EndpointsTool().execute(params.toArray(new String[params.size()]));
   }
-
 }

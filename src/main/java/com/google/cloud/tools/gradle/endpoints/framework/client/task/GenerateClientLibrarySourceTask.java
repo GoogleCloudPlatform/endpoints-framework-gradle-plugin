@@ -16,6 +16,9 @@
 
 package com.google.cloud.tools.gradle.endpoints.framework.client.task;
 
+import java.io.File;
+import java.io.FilenameFilter;
+import java.util.HashMap;
 import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.CopySpec;
@@ -23,13 +26,7 @@ import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.util.HashMap;
-
-/**
- * Task to populate a generated source folder of client lib code
- */
+/** Task to populate a generated source folder of client lib code. */
 public class GenerateClientLibrarySourceTask extends DefaultTask {
   private File clientLibDir;
   private File generatedSrcDir;
@@ -52,15 +49,19 @@ public class GenerateClientLibrarySourceTask extends DefaultTask {
     this.clientLibDir = clientLibDir;
   }
 
+  /** Task entry point. */
   @TaskAction
   public void generateSource() {
     boolean x = getProject().delete(generatedSrcDir);
-    File[] zips = getClientLibDir().listFiles(new FilenameFilter() {
-      @Override
-      public boolean accept(File dir, String name) {
-        return name.endsWith(".zip");
-      }
-    });
+    File[] zips =
+        getClientLibDir()
+            .listFiles(
+                new FilenameFilter() {
+                  @Override
+                  public boolean accept(File dir, String name) {
+                    return name.endsWith(".zip");
+                  }
+                });
 
     final File tmpDir = new File(getTemporaryDir(), "endpoints-tmp");
     getProject().delete(tmpDir);
@@ -68,22 +69,29 @@ public class GenerateClientLibrarySourceTask extends DefaultTask {
     for (final File zip : zips) {
       // Use ant unzip, gradle unzip is having issues
       // with strangely formed client libraries
-      getAnt().invokeMethod("unzip", new HashMap<String, String>() {{
-        put("src", zip.getPath());
-        put("dest", tmpDir.getPath());
-      }});
+      getAnt()
+          .invokeMethod(
+              "unzip",
+              new HashMap<String, String>() {
+                {
+                  put("src", zip.getPath());
+                  put("dest", tmpDir.getPath());
+                }
+              });
     }
 
     for (File unzippedDir : tmpDir.listFiles()) {
       final File srcDir = new File(unzippedDir, "src/main/java");
       if (srcDir.exists() && srcDir.isDirectory()) {
-        getProject().copy(new Action<CopySpec>() {
-          @Override
-          public void execute(CopySpec copySpec) {
-            copySpec.from(srcDir);
-            copySpec.into(generatedSrcDir);
-          }
-        });
+        getProject()
+            .copy(
+                new Action<CopySpec>() {
+                  @Override
+                  public void execute(CopySpec copySpec) {
+                    copySpec.from(srcDir);
+                    copySpec.into(generatedSrcDir);
+                  }
+                });
       }
     }
   }

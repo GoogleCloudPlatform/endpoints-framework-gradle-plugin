@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.google.cloud.tools.gradle.endpoints.framework.server.task;
 
 import com.google.api.server.spi.tools.EndpointsTool;
@@ -31,9 +32,7 @@ import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskAction;
 
-/**
- * Endpoints task to download a discovery document from the endpoints service
- */
+/** Endpoints task to download a discovery document from the endpoints service. */
 public class GenerateDiscoveryDocsTask extends DefaultTask {
   // classesDir is only for detecting that the project has changed
   private File classesDir;
@@ -89,20 +88,31 @@ public class GenerateDiscoveryDocsTask extends DefaultTask {
     this.hostname = hostname;
   }
 
+  /** Task entry point. */
   @TaskAction
   void generateDiscoveryDocs() throws Exception {
     getProject().delete(discoveryDocDir);
     discoveryDocDir.mkdirs();
 
-    String classpath = (getProject().getConvention().getPlugin(JavaPluginConvention.class)
-        .getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME).getRuntimeClasspath())
-        .getAsPath();
+    String classpath =
+        (getProject()
+                .getConvention()
+                .getPlugin(JavaPluginConvention.class)
+                .getSourceSets()
+                .getByName(SourceSet.MAIN_SOURCE_SET_NAME)
+                .getRuntimeClasspath())
+            .getAsPath();
 
-    List<String> params = new ArrayList<>(Arrays.asList(
-        GetDiscoveryDocAction.NAME,
-        "-o", discoveryDocDir.getPath(),
-        "-cp", classpath,
-        "-w", webAppDir.getPath()));
+    List<String> params =
+        new ArrayList<>(
+            Arrays.asList(
+                GetDiscoveryDocAction.NAME,
+                "-o",
+                discoveryDocDir.getPath(),
+                "-cp",
+                classpath,
+                "-w",
+                webAppDir.getPath()));
     if (!Strings.isNullOrEmpty(hostname)) {
       params.add("-h");
       params.add(hostname);
