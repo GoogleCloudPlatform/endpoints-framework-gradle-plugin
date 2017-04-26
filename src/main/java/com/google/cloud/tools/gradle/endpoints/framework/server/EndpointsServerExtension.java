@@ -32,6 +32,7 @@ public class EndpointsServerExtension {
 
   private File clientLibDir;
   private List<String> serviceClasses;
+  private String hostname;
 
   public EndpointsServerExtension(Project project) {
     this.project = project;
@@ -60,4 +61,11 @@ public class EndpointsServerExtension {
     this.serviceClasses = serviceClasses;
   }
 
+  public String getHostname() {
+    return hostname;
+  }
+
+  public void setHostname(String hostname) {
+    this.hostname = hostname;
+  }
 }

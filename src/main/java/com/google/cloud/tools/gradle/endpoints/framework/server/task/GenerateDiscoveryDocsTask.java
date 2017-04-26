@@ -17,6 +17,7 @@ package com.google.cloud.tools.gradle.endpoints.framework.server.task;
 
 import com.google.api.server.spi.tools.EndpointsTool;
 import com.google.api.server.spi.tools.GetDiscoveryDocAction;
+import com.google.common.base.Strings;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,6 +26,7 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
+import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskAction;
@@ -33,12 +35,13 @@ import org.gradle.api.tasks.TaskAction;
  * Endpoints task to download a discovery document from the endpoints service
  */
 public class GenerateDiscoveryDocsTask extends DefaultTask {
-  // classes is only for detecting that the project has changed
+  // classesDir is only for detecting that the project has changed
   private File classesDir;
+
   private File discoveryDocDir;
-  private File webAppDir;
+  private String hostname;
   private List<String> serviceClasses;
-  private String format;
+  private File webAppDir;
 
   @InputDirectory
   public File getClassesDir() {
@@ -76,6 +79,16 @@ public class GenerateDiscoveryDocsTask extends DefaultTask {
     this.serviceClasses = serviceClasses;
   }
 
+  @Optional
+  @Input
+  public String getHostname() {
+    return hostname;
+  }
+
+  public void setHostname(String hostname) {
+    this.hostname = hostname;
+  }
+
   @TaskAction
   void generateDiscoveryDocs() throws Exception {
     getProject().delete(discoveryDocDir);
@@ -90,6 +103,10 @@ public class GenerateDiscoveryDocsTask extends DefaultTask {
         "-o", discoveryDocDir.getPath(),
         "-cp", classpath,
         "-w", webAppDir.getPath()));
+    if (!Strings.isNullOrEmpty(hostname)) {
+      params.add("-h");
+      params.add(hostname);
+    }
     params.addAll(getServiceClasses());
 
     new EndpointsTool().execute(params.toArray(new String[params.size()]));
