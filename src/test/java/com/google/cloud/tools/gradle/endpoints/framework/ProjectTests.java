@@ -38,24 +38,27 @@ public class ProjectTests {
 
   private static final String DEFAULT_URL = "https://myapi.appspot.com/_ah/api";
   private static final String DEFAULT_URL_PREFIX = "public static final String DEFAULT_ROOT_URL = ";
-  private static final String DEFAULT_URL_VARIABLE = DEFAULT_URL_PREFIX + "\"https://myapi.appspot.com/_ah/api/\";";
+  private static final String DEFAULT_URL_VARIABLE =
+      DEFAULT_URL_PREFIX + "\"https://myapi.appspot.com/_ah/api/\";";
   private static final String CLIENT_LIB_PATH = "build/endpointsClientLibs/testApi-v1-java.zip";
-  private static final String DISC_DOC_PATH = "build/endpointsDiscoveryDocs/testApi-v1-rest.discovery";
-  private static final String API_JAVA_FILE_PATH = "testApi/src/main/java/com/example/testApi/TestApi.java";
+  private static final String DISC_DOC_PATH =
+      "build/endpointsDiscoveryDocs/testApi-v1-rest.discovery";
+  private static final String API_JAVA_FILE_PATH =
+      "testApi/src/main/java/com/example/testApi/TestApi.java";
 
-  @Rule
-  public final TemporaryFolder testProjectDir = new TemporaryFolder();
+  @Rule public final TemporaryFolder testProjectDir = new TemporaryFolder();
 
   @Test
   public void testClientServerIntegrationBuilds() throws IOException, URISyntaxException {
     FileUtils.copyDirectory(
         new File(getClass().getClassLoader().getResource("projects/clientserver").toURI()),
         testProjectDir.getRoot());
-    BuildResult buildResult = GradleRunner.create()
-        .withProjectDir(testProjectDir.getRoot())
-        .withPluginClasspath()
-        .withArguments("assemble")
-        .build();
+    BuildResult buildResult =
+        GradleRunner.create()
+            .withProjectDir(testProjectDir.getRoot())
+            .withPluginClasspath()
+            .withArguments("assemble")
+            .build();
   }
 
   @Test
@@ -63,11 +66,12 @@ public class ProjectTests {
     FileUtils.copyDirectory(
         new File(getClass().getClassLoader().getResource("projects/client").toURI()),
         testProjectDir.getRoot());
-    BuildResult buildResult = GradleRunner.create()
-        .withProjectDir(testProjectDir.getRoot())
-        .withPluginClasspath()
-        .withArguments("assemble")
-        .build();
+    BuildResult buildResult =
+        GradleRunner.create()
+            .withProjectDir(testProjectDir.getRoot())
+            .withPluginClasspath()
+            .withArguments("assemble")
+            .build();
   }
 
   @Test
@@ -75,11 +79,12 @@ public class ProjectTests {
     FileUtils.copyDirectory(
         new File(getClass().getClassLoader().getResource("projects/server").toURI()),
         testProjectDir.getRoot());
-    BuildResult buildResult = GradleRunner.create()
-        .withProjectDir(testProjectDir.getRoot())
-        .withPluginClasspath()
-        .withArguments("endpointsClientLibs", "endpointsDiscoveryDocs")
-        .build();
+    BuildResult buildResult =
+        GradleRunner.create()
+            .withProjectDir(testProjectDir.getRoot())
+            .withPluginClasspath()
+            .withArguments("endpointsClientLibs", "endpointsDiscoveryDocs")
+            .build();
 
     File discoveryDoc = new File(testProjectDir.getRoot(), DISC_DOC_PATH);
     Assert.assertTrue(discoveryDoc.exists());
@@ -100,12 +105,12 @@ public class ProjectTests {
         new File(getClass().getClassLoader().getResource("projects/server").toURI()),
         testProjectDir.getRoot());
     injectConfiguration(testProjectDir.getRoot(), "endpointsServer.hostname = 'my.hostname.com'");
-    BuildResult buildResult = GradleRunner.create()
-        .withProjectDir(testProjectDir.getRoot())
-        .withPluginClasspath()
-        .withArguments("endpointsClientLibs", "endpointsDiscoveryDocs")
-        .build();
-
+    BuildResult buildResult =
+        GradleRunner.create()
+            .withProjectDir(testProjectDir.getRoot())
+            .withPluginClasspath()
+            .withArguments("endpointsClientLibs", "endpointsDiscoveryDocs")
+            .build();
 
     File discoveryDoc = new File(testProjectDir.getRoot(), DISC_DOC_PATH);
     String discovery = Files.toString(discoveryDoc, Charsets.UTF_8);
@@ -114,8 +119,11 @@ public class ProjectTests {
 
     File clientLib = new File(testProjectDir.getRoot(), CLIENT_LIB_PATH);
     String apiJavaFile = getFileContentsInZip(clientLib, API_JAVA_FILE_PATH);
-    Assert.assertThat(apiJavaFile, CoreMatchers.not(CoreMatchers.containsString(DEFAULT_URL_VARIABLE)));
-    Assert.assertThat(apiJavaFile, CoreMatchers.containsString(DEFAULT_URL_PREFIX + "\"https://my.hostname.com/_ah/api/\";"));
+    Assert.assertThat(
+        apiJavaFile, CoreMatchers.not(CoreMatchers.containsString(DEFAULT_URL_VARIABLE)));
+    Assert.assertThat(
+        apiJavaFile,
+        CoreMatchers.containsString(DEFAULT_URL_PREFIX + "\"https://my.hostname.com/_ah/api/\";"));
   }
 
   // inject a endpoints plugin configuration into the pom.xml

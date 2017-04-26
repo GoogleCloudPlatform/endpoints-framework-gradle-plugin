@@ -18,7 +18,6 @@ package com.google.cloud.tools.gradle.endpoints.framework.server;
 
 import com.google.cloud.tools.gradle.endpoints.framework.server.task.GenerateClientLibsTask;
 import com.google.cloud.tools.gradle.endpoints.framework.server.task.GenerateDiscoveryDocsTask;
-
 import java.io.File;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
@@ -30,11 +29,11 @@ import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.bundling.Zip;
 
 /**
- * Plugin definition for Endpoints Servers (on App Engine) for generation of
- * client libraries and discovery docs.
+ * Plugin definition for Endpoints Servers (on App Engine) for generation of client libraries and
+ * discovery docs.
  *
- * Also provides the artifact "{@value #ARTIFACT_CONFIGURATION}" that is a zip
- * of all the discovery docs that this server exposes (as defined in web.xml)
+ * <p>Also provides the artifact "{@value #ARTIFACT_CONFIGURATION}" that is a zip of all the
+ * discovery docs that this server exposes (as defined in web.xml)
  */
 public class EndpointsServerPlugin implements Plugin<Project> {
 
@@ -48,6 +47,7 @@ public class EndpointsServerPlugin implements Plugin<Project> {
   private Project project;
   private EndpointsServerExtension extension;
 
+  /** Plugin entry point. */
   public void apply(Project project) {
     this.project = project;
 
@@ -58,78 +58,103 @@ public class EndpointsServerPlugin implements Plugin<Project> {
   }
 
   private void createExtension() {
-    extension = project.getExtensions()
-        .create(SERVER_EXTENSION, EndpointsServerExtension.class, project);
+    extension =
+        project.getExtensions().create(SERVER_EXTENSION, EndpointsServerExtension.class, project);
   }
 
   private void createDiscoverDocConfiguration() {
-    project.afterEvaluate(new Action<Project>() {
-      @Override
-      public void execute(Project project) {
-        project.getConfigurations().create(ARTIFACT_CONFIGURATION);
-        Zip discoveryDocArchive = project.getTasks().create("_zipDiscoveryDocs", Zip.class);
-        discoveryDocArchive.dependsOn(GENERATE_DISCOVERY_DOC_TASK);
-        discoveryDocArchive.from(extension.getDiscoveryDocDir());
-        discoveryDocArchive.setArchiveName(project.getName() + "-" + "discoveryDocs.zip");
+    project.afterEvaluate(
+        new Action<Project>() {
+          @Override
+          public void execute(Project project) {
+            project.getConfigurations().create(ARTIFACT_CONFIGURATION);
+            Zip discoveryDocArchive = project.getTasks().create("_zipDiscoveryDocs", Zip.class);
+            discoveryDocArchive.dependsOn(GENERATE_DISCOVERY_DOC_TASK);
+            discoveryDocArchive.from(extension.getDiscoveryDocDir());
+            discoveryDocArchive.setArchiveName(project.getName() + "-" + "discoveryDocs.zip");
 
-        project.getArtifacts().add(ARTIFACT_CONFIGURATION, discoveryDocArchive);
-      }
-    });
-
+            project.getArtifacts().add(ARTIFACT_CONFIGURATION, discoveryDocArchive);
+          }
+        });
   }
 
   private void createGenerateDiscoveryDocsTask() {
-    project.getTasks().create(GENERATE_DISCOVERY_DOC_TASK, GenerateDiscoveryDocsTask.class,
-        new Action<GenerateDiscoveryDocsTask>() {
-          @Override
-          public void execute(final GenerateDiscoveryDocsTask genDiscoveryDocs) {
-            genDiscoveryDocs.setDescription("Generate endpoints discovery documents");
-            genDiscoveryDocs.setGroup(APP_ENGINE_ENDPOINTS);
-            genDiscoveryDocs.dependsOn(JavaPlugin.CLASSES_TASK_NAME);
-
-            project.afterEvaluate(new Action<Project>() {
+    project
+        .getTasks()
+        .create(
+            GENERATE_DISCOVERY_DOC_TASK,
+            GenerateDiscoveryDocsTask.class,
+            new Action<GenerateDiscoveryDocsTask>() {
               @Override
-              public void execute(Project project) {
-                File classesDir = project.getConvention().getPlugin(JavaPluginConvention.class)
-                    .getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME).getOutput()
-                    .getClassesDir();
-                genDiscoveryDocs.setClassesDir(classesDir);
-                genDiscoveryDocs.setDiscoveryDocDir(extension.getDiscoveryDocDir());
-                genDiscoveryDocs.setHostname(extension.getHostname());
-                genDiscoveryDocs.setServiceClasses(extension.getServiceClasses());
-                genDiscoveryDocs.setWebAppDir(
-                    project.getConvention().getPlugin(WarPluginConvention.class).getWebAppDir());
+              public void execute(final GenerateDiscoveryDocsTask genDiscoveryDocs) {
+                genDiscoveryDocs.setDescription("Generate endpoints discovery documents");
+                genDiscoveryDocs.setGroup(APP_ENGINE_ENDPOINTS);
+                genDiscoveryDocs.dependsOn(JavaPlugin.CLASSES_TASK_NAME);
+
+                project.afterEvaluate(
+                    new Action<Project>() {
+                      @Override
+                      public void execute(Project project) {
+                        File classesDir =
+                            project
+                                .getConvention()
+                                .getPlugin(JavaPluginConvention.class)
+                                .getSourceSets()
+                                .getByName(SourceSet.MAIN_SOURCE_SET_NAME)
+                                .getOutput()
+                                .getClassesDir();
+                        genDiscoveryDocs.setClassesDir(classesDir);
+                        genDiscoveryDocs.setDiscoveryDocDir(extension.getDiscoveryDocDir());
+                        genDiscoveryDocs.setHostname(extension.getHostname());
+                        genDiscoveryDocs.setServiceClasses(extension.getServiceClasses());
+                        genDiscoveryDocs.setWebAppDir(
+                            project
+                                .getConvention()
+                                .getPlugin(WarPluginConvention.class)
+                                .getWebAppDir());
+                      }
+                    });
               }
             });
-          }
-        });
   }
 
   private void createGenerateClientLibsTask() {
-    project.getTasks().create(GENERATE_CLINT_LIBS_TASK, GenerateClientLibsTask.class,
-        new Action<GenerateClientLibsTask>() {
-          @Override
-          public void execute(final GenerateClientLibsTask genClientLibs) {
-            genClientLibs.setDescription("Generate endpoints client libraries");
-            genClientLibs.setGroup(APP_ENGINE_ENDPOINTS);
-            genClientLibs.dependsOn(JavaPlugin.CLASSES_TASK_NAME);
-
-            project.afterEvaluate(new Action<Project>() {
+    project
+        .getTasks()
+        .create(
+            GENERATE_CLINT_LIBS_TASK,
+            GenerateClientLibsTask.class,
+            new Action<GenerateClientLibsTask>() {
               @Override
-              public void execute(Project project) {
-                File classesDir = project.getConvention().getPlugin(JavaPluginConvention.class)
-                    .getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME).getOutput()
-                    .getClassesDir();
-                genClientLibs.setClassesDir(classesDir);
-                genClientLibs.setClientLibDir(extension.getClientLibDir());
-                genClientLibs.setHostname(extension.getHostname());
-                genClientLibs.setServiceClasses(extension.getServiceClasses());
-                genClientLibs.setWebAppDir(
-                    project.getConvention().getPlugin(WarPluginConvention.class).getWebAppDir());
+              public void execute(final GenerateClientLibsTask genClientLibs) {
+                genClientLibs.setDescription("Generate endpoints client libraries");
+                genClientLibs.setGroup(APP_ENGINE_ENDPOINTS);
+                genClientLibs.dependsOn(JavaPlugin.CLASSES_TASK_NAME);
+
+                project.afterEvaluate(
+                    new Action<Project>() {
+                      @Override
+                      public void execute(Project project) {
+                        File classesDir =
+                            project
+                                .getConvention()
+                                .getPlugin(JavaPluginConvention.class)
+                                .getSourceSets()
+                                .getByName(SourceSet.MAIN_SOURCE_SET_NAME)
+                                .getOutput()
+                                .getClassesDir();
+                        genClientLibs.setClassesDir(classesDir);
+                        genClientLibs.setClientLibDir(extension.getClientLibDir());
+                        genClientLibs.setHostname(extension.getHostname());
+                        genClientLibs.setServiceClasses(extension.getServiceClasses());
+                        genClientLibs.setWebAppDir(
+                            project
+                                .getConvention()
+                                .getPlugin(WarPluginConvention.class)
+                                .getWebAppDir());
+                      }
+                    });
               }
             });
-          }
-        });
   }
 }
-

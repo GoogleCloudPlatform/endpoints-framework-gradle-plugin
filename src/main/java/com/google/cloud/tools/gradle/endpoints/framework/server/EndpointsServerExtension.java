@@ -16,15 +16,12 @@
 
 package com.google.cloud.tools.gradle.endpoints.framework.server;
 
-import org.gradle.api.Project;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import org.gradle.api.Project;
 
-/**
- * Plugin extension for endpoints server plugin
- */
+/** Plugin extension for endpoints server plugin. */
 public class EndpointsServerExtension {
 
   private final Project project;
@@ -34,6 +31,7 @@ public class EndpointsServerExtension {
   private List<String> serviceClasses;
   private String hostname;
 
+  /** Constructor. */
   public EndpointsServerExtension(Project project) {
     this.project = project;
     discoveryDocDir = new File(project.getBuildDir(), "endpointsDiscoveryDocs");
