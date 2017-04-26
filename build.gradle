@@ -3,12 +3,12 @@ apply plugin: 'groovy'
 apply plugin: 'java-gradle-plugin'
 
 buildscript {
-	repositories {
-		jcenter()
+  repositories {
+    jcenter()
     maven {
       url "https://plugins.gradle.org/m2"
     }
-	}
+  }
   dependencies {
     classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
     classpath 'gradle.plugin.com.github.sherter.google-java-format:google-java-format-gradle-plugin:0.6'
