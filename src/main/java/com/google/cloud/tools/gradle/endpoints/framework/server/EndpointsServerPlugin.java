@@ -95,6 +95,7 @@ public class EndpointsServerPlugin implements Plugin<Project> {
                     .getClassesDir();
                 genDiscoveryDocs.setClassesDir(classesDir);
                 genDiscoveryDocs.setDiscoveryDocDir(extension.getDiscoveryDocDir());
+                genDiscoveryDocs.setHostname(extension.getHostname());
                 genDiscoveryDocs.setServiceClasses(extension.getServiceClasses());
                 genDiscoveryDocs.setWebAppDir(
                     project.getConvention().getPlugin(WarPluginConvention.class).getWebAppDir());
@@ -121,6 +122,7 @@ public class EndpointsServerPlugin implements Plugin<Project> {
                     .getClassesDir();
                 genClientLibs.setClassesDir(classesDir);
                 genClientLibs.setClientLibDir(extension.getClientLibDir());
+                genClientLibs.setHostname(extension.getHostname());
                 genClientLibs.setServiceClasses(extension.getServiceClasses());
                 genClientLibs.setWebAppDir(
                     project.getConvention().getPlugin(WarPluginConvention.class).getWebAppDir());

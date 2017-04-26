@@ -18,6 +18,7 @@ package com.google.cloud.tools.gradle.endpoints.framework.server.task;
 
 import com.google.api.server.spi.tools.EndpointsTool;
 import com.google.api.server.spi.tools.GetClientLibAction;
+import com.google.common.base.Strings;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,6 +27,7 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
+import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskAction;
@@ -36,11 +38,13 @@ import org.gradle.api.tasks.TaskAction;
  * same gradle project, use EndpointsClientPlugin
  */
 public class GenerateClientLibsTask extends DefaultTask {
-  // classes is only for detecting that the project has changed
+  // classesDir is only for detecting that the project has changed
   private File classesDir;
+
   private File clientLibDir;
-  private File webAppDir;
+  private String hostname;
   private List<String> serviceClasses;
+  private File webAppDir;
 
   @InputDirectory
   public File getClassesDir() {
@@ -78,6 +82,16 @@ public class GenerateClientLibsTask extends DefaultTask {
     this.serviceClasses = serviceClasses;
   }
 
+  @Input
+  @Optional
+  public String getHostname() {
+    return hostname;
+  }
+
+  public void setHostname(String hostname) {
+    this.hostname = hostname;
+  }
+
   @TaskAction
   void generateClientLibs() throws Exception {
 
@@ -98,6 +112,10 @@ public class GenerateClientLibsTask extends DefaultTask {
         "-l", "java",
         "-bs", "gradle",
         "-w", webAppDir.getPath()));
+    if (!Strings.isNullOrEmpty(hostname)) {
+      params.add("-h");
+      params.add(hostname);
+    }
     params.addAll(serviceClasses);
 
     new EndpointsTool().execute(params.toArray(new String[params.size()]));

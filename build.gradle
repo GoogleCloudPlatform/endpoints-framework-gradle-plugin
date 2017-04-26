@@ -21,15 +21,12 @@ version = '1.0.0-SNAPSHOT'
 
 repositories {
   mavenCentral()
-  maven {
-    url 'https://oss.sonatype.org/content/repositories/snapshots'
-  }
 }
 
 dependencies {
   compile localGroovy()
   compile gradleApi()
-  compile "com.google.endpoints:endpoints-framework-tools:2.0.5"
+  compile "com.google.endpoints:endpoints-framework-tools:2.0.7"
   compile "com.google.guava:guava:19.0"
 
   testCompile 'commons-io:commons-io:2.4'
