@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2016 Google Inc. All Right Reserved.
+ *  Copyright (c) 2017 Google Inc. All Right Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 package com.google.cloud.tools.gradle.endpoints.framework.server.task;
 
 import com.google.api.server.spi.tools.EndpointsTool;
-import com.google.api.server.spi.tools.GetDiscoveryDocAction;
+import com.google.api.server.spi.tools.GetOpenApiDocAction;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.plugins.JavaPluginConvention;
@@ -32,12 +32,12 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Endpoints task to download a discovery document from the endpoints service
+ * Endpoints task to download a openapi document from the endpoints service
  */
-public class GenerateDiscoveryDocsTask extends DefaultTask {
+public class GenerateOpenApiDocsTask extends DefaultTask {
   // classes is only for detecting that the project has changed
   private File classesDir;
-  private File discoveryDocDir;
+  private File openApiDocDir;
   private File webAppDir;
   private List<String> serviceClasses;
   private String format;
@@ -52,12 +52,12 @@ public class GenerateDiscoveryDocsTask extends DefaultTask {
   }
 
   @OutputDirectory
-  public File getDiscoveryDocDir() {
-    return discoveryDocDir;
+  public File getOpenApiDocDir() {
+    return openApiDocDir;
   }
 
-  public void setDiscoveryDocDir(File discoveryDocDir) {
-    this.discoveryDocDir = discoveryDocDir;
+  public void setOpenApiDocDir(File openApiDocDir) {
+    this.openApiDocDir = openApiDocDir;
   }
 
   @InputDirectory
@@ -79,17 +79,17 @@ public class GenerateDiscoveryDocsTask extends DefaultTask {
   }
 
   @TaskAction
-  void generateDiscoveryDocs() throws Exception {
-    getProject().delete(discoveryDocDir);
-    discoveryDocDir.mkdirs();
+  void generateOpenApiDocs() throws Exception {
+    getProject().delete(openApiDocDir);
+    openApiDocDir.mkdirs();
 
     String classpath = (getProject().getConvention().getPlugin(JavaPluginConvention.class)
         .getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME).getRuntimeClasspath())
         .getAsPath();
 
     List<String> params = new ArrayList<>(Arrays.asList(
-        GetDiscoveryDocAction.NAME,
-        "-o", discoveryDocDir.getPath(),
+        GetOpenApiDocAction.NAME,
+        "-o", openApiDocDir.getPath() + "/openapi.json",
         "-cp", classpath,
         "-w", webAppDir.getPath()));
     params.addAll(getServiceClasses());
