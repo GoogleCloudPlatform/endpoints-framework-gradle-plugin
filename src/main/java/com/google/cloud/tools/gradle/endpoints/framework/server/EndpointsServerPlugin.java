@@ -138,6 +138,7 @@ public class EndpointsServerPlugin implements Plugin<Project> {
                       .getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME).getOutput()
                       .getClassesDir();
               genOpenApiDocs.setClassesDir(classesDir);
+              genOpenApiDocs.setHostname(extension.getHostname());
               genOpenApiDocs.setOpenApiDocDir(extension.getOpenApiDocDir());
               genOpenApiDocs.setServiceClasses(extension.getServiceClasses());
               genOpenApiDocs.setWebAppDir(

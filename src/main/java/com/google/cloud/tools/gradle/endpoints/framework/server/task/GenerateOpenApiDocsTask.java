@@ -13,15 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.google.cloud.tools.gradle.endpoints.framework.server.task;
 
 import com.google.api.server.spi.tools.EndpointsTool;
 import com.google.api.server.spi.tools.GetOpenApiDocAction;
 
+import com.google.common.base.Strings;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
+import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskAction;
@@ -31,16 +34,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Endpoints task to download a openapi document from the endpoints service
- */
+/** Endpoints task to download a openapi document from the endpoints service. */
 public class GenerateOpenApiDocsTask extends DefaultTask {
   // classes is only for detecting that the project has changed
   private File classesDir;
   private File openApiDocDir;
   private File webAppDir;
   private List<String> serviceClasses;
-  private String format;
+  private String hostname;
 
   @InputDirectory
   public File getClassesDir() {
@@ -78,6 +79,17 @@ public class GenerateOpenApiDocsTask extends DefaultTask {
     this.serviceClasses = serviceClasses;
   }
 
+  @Optional
+  @Input
+  public String getHostname() {
+    return hostname;
+  }
+
+  public void setHostname(String hostname) {
+    this.hostname = hostname;
+  }
+
+  /** Task entry point. */
   @TaskAction
   void generateOpenApiDocs() throws Exception {
     getProject().delete(openApiDocDir);
@@ -89,11 +101,19 @@ public class GenerateOpenApiDocsTask extends DefaultTask {
 
     List<String> params = new ArrayList<>(Arrays.asList(
         GetOpenApiDocAction.NAME,
-        "-o", openApiDocDir.getPath() + "/openapi.json",
+        "-o", getOpenApiDocPath(),
         "-cp", classpath,
         "-w", webAppDir.getPath()));
+    if (!Strings.isNullOrEmpty(hostname)) {
+      params.add("-h");
+      params.add(hostname);
+    }
     params.addAll(getServiceClasses());
 
     new EndpointsTool().execute(params.toArray(new String[params.size()]));
+  }
+
+  private String getOpenApiDocPath() {
+    return new File(openApiDocDir, "openapi.json").getPath();
   }
 }
