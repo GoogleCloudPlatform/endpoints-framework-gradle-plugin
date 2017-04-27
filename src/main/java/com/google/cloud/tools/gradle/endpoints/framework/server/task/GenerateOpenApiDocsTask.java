@@ -18,8 +18,11 @@ package com.google.cloud.tools.gradle.endpoints.framework.server.task;
 
 import com.google.api.server.spi.tools.EndpointsTool;
 import com.google.api.server.spi.tools.GetOpenApiDocAction;
-
 import com.google.common.base.Strings;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.Input;
@@ -28,11 +31,6 @@ import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskAction;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /** Endpoints task to download a openapi document from the endpoints service. */
 public class GenerateOpenApiDocsTask extends DefaultTask {
@@ -95,15 +93,25 @@ public class GenerateOpenApiDocsTask extends DefaultTask {
     getProject().delete(openApiDocDir);
     openApiDocDir.mkdirs();
 
-    String classpath = (getProject().getConvention().getPlugin(JavaPluginConvention.class)
-        .getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME).getRuntimeClasspath())
-        .getAsPath();
+    String classpath =
+        (getProject()
+                .getConvention()
+                .getPlugin(JavaPluginConvention.class)
+                .getSourceSets()
+                .getByName(SourceSet.MAIN_SOURCE_SET_NAME)
+                .getRuntimeClasspath())
+            .getAsPath();
 
-    List<String> params = new ArrayList<>(Arrays.asList(
-        GetOpenApiDocAction.NAME,
-        "-o", getOpenApiDocPath(),
-        "-cp", classpath,
-        "-w", webAppDir.getPath()));
+    List<String> params =
+        new ArrayList<>(
+            Arrays.asList(
+                GetOpenApiDocAction.NAME,
+                "-o",
+                computeOpenApiDocPath(),
+                "-cp",
+                classpath,
+                "-w",
+                webAppDir.getPath()));
     if (!Strings.isNullOrEmpty(hostname)) {
       params.add("-h");
       params.add(hostname);
@@ -113,7 +121,7 @@ public class GenerateOpenApiDocsTask extends DefaultTask {
     new EndpointsTool().execute(params.toArray(new String[params.size()]));
   }
 
-  private String getOpenApiDocPath() {
+  private String computeOpenApiDocPath() {
     return new File(openApiDocDir, "openapi.json").getPath();
   }
 }
