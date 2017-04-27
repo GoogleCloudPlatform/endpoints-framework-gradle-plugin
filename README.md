@@ -18,7 +18,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.google.cloud.tools:endpoints-framework-gradle-plugin:1.0.0-beta6'
+    classpath 'com.google.cloud.tools:endpoints-framework-gradle-plugin:1.0.0-beta8'
   }
 }
 ```
@@ -38,6 +38,7 @@ The plugin exposes the following server side goals
 The plugin exposes server side configuration through the `endpointsServer` extension
 * `serviceClasses` - List of service classes (optional), this can be inferred from web.xml
 * `clientLibDir` - Output directory for generated client libraries
+* `hostname` - To set the root url for discovery docs and client libs (ex: `hostname = myapp.appspot.com` will result in a default root url of `https://myapp.appspot.com/_ah/api`)
 
 #### Usage
 Make sure your web.xml is [configured to expose your endpoints](https://cloud.google.com/endpoints/docs/frameworks/java/required_files) correctly.
@@ -58,7 +59,7 @@ $> gradle endpointsOpenApiDocs
 OpenApi documents will be written to `build/endpointsOpenApiDocs`
 
 
-###Client
+### Client
 In your client Java app, add the following plugin to your build.gradle:
 
 ```Groovy

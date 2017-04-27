@@ -18,6 +18,7 @@ package com.google.cloud.tools.gradle.endpoints.framework.server.task;
 
 import com.google.api.server.spi.tools.EndpointsTool;
 import com.google.api.server.spi.tools.GetClientLibAction;
+import com.google.common.base.Strings;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,21 +27,24 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
+import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskAction;
 
 /**
  * Endpoints task to download a client library document from the endpoints service, useful for
- * projects not in the same gradle configuration. For clients and servers that are part of the
- * same gradle project, use EndpointsClientPlugin
+ * projects not in the same gradle configuration. For clients and servers that are part of the same
+ * gradle project, use EndpointsClientPlugin
  */
 public class GenerateClientLibsTask extends DefaultTask {
-  // classes is only for detecting that the project has changed
+  // classesDir is only for detecting that the project has changed
   private File classesDir;
+
   private File clientLibDir;
-  private File webAppDir;
+  private String hostname;
   private List<String> serviceClasses;
+  private File webAppDir;
 
   @InputDirectory
   public File getClassesDir() {
@@ -78,6 +82,16 @@ public class GenerateClientLibsTask extends DefaultTask {
     this.serviceClasses = serviceClasses;
   }
 
+  @Input
+  @Optional
+  public String getHostname() {
+    return hostname;
+  }
+
+  public void setHostname(String hostname) {
+    this.hostname = hostname;
+  }
+
   @TaskAction
   void generateClientLibs() throws Exception {
 
@@ -87,20 +101,35 @@ public class GenerateClientLibsTask extends DefaultTask {
     // having builds write new versions of client libraries to the output directory doesn't really
     // affect anything.
 
-    String classpath = (getProject().getConvention().getPlugin(JavaPluginConvention.class)
-        .getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME).getRuntimeClasspath())
-        .getAsPath();
+    String classpath =
+        (getProject()
+                .getConvention()
+                .getPlugin(JavaPluginConvention.class)
+                .getSourceSets()
+                .getByName(SourceSet.MAIN_SOURCE_SET_NAME)
+                .getRuntimeClasspath())
+            .getAsPath();
 
-    List<String> params = new ArrayList<>(Arrays.asList(
-        GetClientLibAction.NAME,
-        "-o", clientLibDir.getPath(),
-        "-cp", classpath,
-        "-l", "java",
-        "-bs", "gradle",
-        "-w", webAppDir.getPath()));
+    List<String> params =
+        new ArrayList<>(
+            Arrays.asList(
+                GetClientLibAction.NAME,
+                "-o",
+                clientLibDir.getPath(),
+                "-cp",
+                classpath,
+                "-l",
+                "java",
+                "-bs",
+                "gradle",
+                "-w",
+                webAppDir.getPath()));
+    if (!Strings.isNullOrEmpty(hostname)) {
+      params.add("-h");
+      params.add(hostname);
+    }
     params.addAll(serviceClasses);
 
     new EndpointsTool().execute(params.toArray(new String[params.size()]));
   }
-
 }

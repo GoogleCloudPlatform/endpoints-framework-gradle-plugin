@@ -16,15 +16,12 @@
 
 package com.google.cloud.tools.gradle.endpoints.framework.client;
 
-import org.gradle.api.Project;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import org.gradle.api.Project;
 
-/**
- * Plugin extension for endpoints client plugin
- */
+/** Plugin extension for endpoints client plugin. */
 public class EndpointsClientExtension {
 
   private File genSrcDir;
@@ -33,6 +30,7 @@ public class EndpointsClientExtension {
   private final Project project;
   private List<File> discoveryDocs;
 
+  /** Constructor. */
   public EndpointsClientExtension(Project project) {
     this.project = project;
     genSrcDir = new File(project.getBuildDir(), "endpointsGenSrc");

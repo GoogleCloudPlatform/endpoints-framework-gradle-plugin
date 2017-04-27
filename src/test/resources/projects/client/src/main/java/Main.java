@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
+import com.example.testApi.TestApi;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
-
-import com.example.testApi.TestApi;
-
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 

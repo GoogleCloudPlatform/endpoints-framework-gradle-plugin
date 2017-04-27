@@ -3,15 +3,25 @@ apply plugin: 'groovy'
 apply plugin: 'java-gradle-plugin'
 
 buildscript {
-	repositories {
-		jcenter()
-	}
-    dependencies {
-        classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
+  repositories {
+    jcenter()
+    maven {
+      url "https://plugins.gradle.org/m2"
     }
+  }
+  dependencies {
+    classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
+    classpath 'gradle.plugin.com.github.sherter.google-java-format:google-java-format-gradle-plugin:0.6'
+  }
+}
+
+repositories {
+  mavenCentral()
 }
 
 apply from: 'scripts/publishing.gradle'
+apply from: 'scripts/google-java-format.gradle'
+apply from: 'scripts/checkstyle.gradle'
 
 sourceCompatibility = JavaVersion.VERSION_1_7
 targetCompatibility = JavaVersion.VERSION_1_7
@@ -19,17 +29,10 @@ targetCompatibility = JavaVersion.VERSION_1_7
 group = 'com.google.cloud.tools'
 version = '1.0.0-SNAPSHOT'
 
-repositories {
-  mavenCentral()
-  maven {
-    url 'https://oss.sonatype.org/content/repositories/snapshots'
-  }
-}
-
 dependencies {
   compile localGroovy()
   compile gradleApi()
-  compile "com.google.endpoints:endpoints-framework-tools:2.0.5"
+  compile "com.google.endpoints:endpoints-framework-tools:2.0.7"
   compile "com.google.guava:guava:19.0"
 
   testCompile 'commons-io:commons-io:2.4'
@@ -50,5 +53,5 @@ jar {
 }
 
 task wrapper(type: Wrapper) {
-  gradleVersion = '3.2'
+  gradleVersion = '3.4.1'
 }
