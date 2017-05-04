@@ -130,7 +130,7 @@ public class EndpointsServerPlugin implements Plugin<Project> {
             new Action<GenerateOpenApiDocsTask>() {
               @Override
               public void execute(final GenerateOpenApiDocsTask genOpenApiDocs) {
-                genOpenApiDocs.setDescription("Generate endpoints openapi documents");
+                genOpenApiDocs.setDescription("Generate endpoints Open API documents");
                 genOpenApiDocs.setGroup(APP_ENGINE_ENDPOINTS);
                 genOpenApiDocs.dependsOn(JavaPlugin.CLASSES_TASK_NAME);
 

@@ -93,15 +93,15 @@ public class GenerateOpenApiDocsTask extends DefaultTask {
   @TaskAction
   void generateOpenApiDocs() throws Exception {
     getProject().delete(openApiDocDir);
-    openApiDocDir.mkdirs();
+    getProject().mkdir(openApiDocDir);
 
     String classpath =
-        (getProject()
-                .getConvention()
-                .getPlugin(JavaPluginConvention.class)
-                .getSourceSets()
-                .getByName(SourceSet.MAIN_SOURCE_SET_NAME)
-                .getRuntimeClasspath())
+        getProject()
+            .getConvention()
+            .getPlugin(JavaPluginConvention.class)
+            .getSourceSets()
+            .getByName(SourceSet.MAIN_SOURCE_SET_NAME)
+            .getRuntimeClasspath()
             .getAsPath();
 
     List<String> params =
