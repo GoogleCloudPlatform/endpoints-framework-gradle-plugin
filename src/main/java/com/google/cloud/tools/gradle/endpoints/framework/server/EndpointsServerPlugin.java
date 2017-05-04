@@ -18,6 +18,7 @@ package com.google.cloud.tools.gradle.endpoints.framework.server;
 
 import com.google.cloud.tools.gradle.endpoints.framework.server.task.GenerateClientLibsTask;
 import com.google.cloud.tools.gradle.endpoints.framework.server.task.GenerateDiscoveryDocsTask;
+import com.google.cloud.tools.gradle.endpoints.framework.server.task.GenerateOpenApiDocsTask;
 import java.io.File;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
@@ -29,14 +30,15 @@ import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.bundling.Zip;
 
 /**
- * Plugin definition for Endpoints Servers (on App Engine) for generation of client libraries and
- * discovery docs.
+ * Plugin definition for Endpoints Servers (on App Engine) for generation of client libraries,
+ * openapi and discovery docs.
  *
  * <p>Also provides the artifact "{@value #ARTIFACT_CONFIGURATION}" that is a zip of all the
  * discovery docs that this server exposes (as defined in web.xml)
  */
 public class EndpointsServerPlugin implements Plugin<Project> {
 
+  public static final String GENERATE_OPENAPI_DOC_TASK = "endpointsOpenApiDocs";
   public static final String GENERATE_DISCOVERY_DOC_TASK = "endpointsDiscoveryDocs";
   public static final String GENERATE_CLINT_LIBS_TASK = "endpointsClientLibs";
   public static final String SERVER_EXTENSION = "endpointsServer";
@@ -54,6 +56,7 @@ public class EndpointsServerPlugin implements Plugin<Project> {
     createExtension();
     createDiscoverDocConfiguration();
     createGenerateDiscoveryDocsTask();
+    createGenerateOpenApiDocsTask();
     createGenerateClientLibsTask();
   }
 
@@ -108,6 +111,46 @@ public class EndpointsServerPlugin implements Plugin<Project> {
                         genDiscoveryDocs.setHostname(extension.getHostname());
                         genDiscoveryDocs.setServiceClasses(extension.getServiceClasses());
                         genDiscoveryDocs.setWebAppDir(
+                            project
+                                .getConvention()
+                                .getPlugin(WarPluginConvention.class)
+                                .getWebAppDir());
+                      }
+                    });
+              }
+            });
+  }
+
+  private void createGenerateOpenApiDocsTask() {
+    project
+        .getTasks()
+        .create(
+            GENERATE_OPENAPI_DOC_TASK,
+            GenerateOpenApiDocsTask.class,
+            new Action<GenerateOpenApiDocsTask>() {
+              @Override
+              public void execute(final GenerateOpenApiDocsTask genOpenApiDocs) {
+                genOpenApiDocs.setDescription("Generate endpoints Open API documents");
+                genOpenApiDocs.setGroup(APP_ENGINE_ENDPOINTS);
+                genOpenApiDocs.dependsOn(JavaPlugin.CLASSES_TASK_NAME);
+
+                project.afterEvaluate(
+                    new Action<Project>() {
+                      @Override
+                      public void execute(Project project) {
+                        File classesDir =
+                            project
+                                .getConvention()
+                                .getPlugin(JavaPluginConvention.class)
+                                .getSourceSets()
+                                .getByName(SourceSet.MAIN_SOURCE_SET_NAME)
+                                .getOutput()
+                                .getClassesDir();
+                        genOpenApiDocs.setClassesDir(classesDir);
+                        genOpenApiDocs.setHostname(extension.getHostname());
+                        genOpenApiDocs.setOpenApiDocDir(extension.getOpenApiDocDir());
+                        genOpenApiDocs.setServiceClasses(extension.getServiceClasses());
+                        genOpenApiDocs.setWebAppDir(
                             project
                                 .getConvention()
                                 .getPlugin(WarPluginConvention.class)
