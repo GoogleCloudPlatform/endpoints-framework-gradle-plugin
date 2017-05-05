@@ -38,8 +38,10 @@ public class EndpointsClientPluginTest {
             .gradleRunnerArguments("assemble")
             .build();
 
-    // the client project will NOT build if the integration is not working correctly because of the
-    // dependency on generated source.
+    // Part of what we're testing is that a class with a dependency on generated source will compile
+    // correctly when the generated source is created at build time. The above build will fail with
+    // a gradle exception if generation and association of the generated source with the project
+    // does not happen correctly.
 
     File genSrcDir = new File(testProjectDir.getRoot(), "build/endpointsGenSrc");
     File genSrcFile = new File(genSrcDir, "com/example/testApi/TestApi.java");
