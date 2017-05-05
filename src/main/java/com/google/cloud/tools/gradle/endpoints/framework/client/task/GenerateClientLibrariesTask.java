@@ -80,7 +80,7 @@ public class GenerateClientLibrariesTask extends DefaultTask {
   @TaskAction
   public void generateClientLibs() throws Exception {
     getProject().delete(clientLibraryDir);
-    clientLibraryDir.mkdirs();
+    getProject().mkdir(clientLibraryDir);
 
     for (File discoveryDoc : discoveryDocs) {
       runEndpointsTools(discoveryDoc);

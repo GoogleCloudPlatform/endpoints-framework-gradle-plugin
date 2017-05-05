@@ -92,15 +92,15 @@ public class GenerateDiscoveryDocsTask extends DefaultTask {
   @TaskAction
   void generateDiscoveryDocs() throws Exception {
     getProject().delete(discoveryDocDir);
-    discoveryDocDir.mkdirs();
+    getProject().mkdir(discoveryDocDir);
 
     String classpath =
-        (getProject()
-                .getConvention()
-                .getPlugin(JavaPluginConvention.class)
-                .getSourceSets()
-                .getByName(SourceSet.MAIN_SOURCE_SET_NAME)
-                .getRuntimeClasspath())
+        getProject()
+            .getConvention()
+            .getPlugin(JavaPluginConvention.class)
+            .getSourceSets()
+            .getByName(SourceSet.MAIN_SOURCE_SET_NAME)
+            .getRuntimeClasspath()
             .getAsPath();
 
     List<String> params =

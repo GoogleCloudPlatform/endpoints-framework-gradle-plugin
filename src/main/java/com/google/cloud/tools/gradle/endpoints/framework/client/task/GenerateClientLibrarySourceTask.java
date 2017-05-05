@@ -65,7 +65,7 @@ public class GenerateClientLibrarySourceTask extends DefaultTask {
 
     final File tmpDir = new File(getTemporaryDir(), "endpoints-tmp");
     getProject().delete(tmpDir);
-    tmpDir.mkdir();
+    getProject().mkdir(tmpDir);
     for (final File zip : zips) {
       // Use ant unzip, gradle unzip is having issues
       // with strangely formed client libraries

@@ -55,7 +55,7 @@ public class ExtractDiscoveryDocZipsTask extends DefaultTask {
   @TaskAction
   public void extractDiscoveryDocs() {
     getProject().delete(discoveryDocsDir);
-    discoveryDocsDir.mkdirs();
+    getProject().mkdir(discoveryDocsDir);
 
     for (final File discoveryDocZip : discoveryDocZips) {
       getAnt()
