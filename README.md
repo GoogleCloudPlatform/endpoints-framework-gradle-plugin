@@ -18,7 +18,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.google.cloud.tools:endpoints-framework-gradle-plugin:1.0.0-beta8'
+    classpath 'com.google.cloud.tools:endpoints-framework-gradle-plugin:1.0.0-beta9'
   }
 }
 ```
@@ -33,6 +33,7 @@ apply plugin: 'com.google.cloud.tools.endpoints-framework-server'
 The plugin exposes the following server side goals
 * `endpointsClientLibs` - generate client libraries
 * `endpointsDiscoveryDocs` - generate discovery documents
+* `endpointsOpenApiDocs` - generate Open Api documents
 
 The plugin exposes server side configuration through the `endpointsServer` extension
 * `serviceClasses` - List of service classes (optional), this can be inferred from web.xml
