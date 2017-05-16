@@ -24,8 +24,8 @@ buildscript {
     // classpath 'com.google.appengine:gradle-appengine-plugin:1.9.51'
       
     // add these 
-    classpath "com.google.cloud.tools:endpoints-framework-gradle-plugin:1.0.0-beta8"
-    classpath 'com.google.cloud.tools:appengine-gradle-plugin:1.3.0'
+    classpath "com.google.cloud.tools:endpoints-framework-gradle-plugin:1.0.0"
+    classpath 'com.google.cloud.tools:appengine-gradle-plugin:1.3.1'
   }
 }
 ```
@@ -79,7 +79,7 @@ buildscript {
   ...
   dependencies {
     // add this
-    classpath "com.google.cloud.tools:endpoints-framework-gradle-plugin:1.3.0"
+    classpath "com.google.cloud.tools:endpoints-framework-gradle-plugin:1.0.0"
   }
 }
 ```
