@@ -127,7 +127,7 @@ buildscript {
 ## Android Studio
 Android Studio's App Engine tooling will no long *Gradle Sync* with these plugins, and while things may continue to work on stale configuration, it's not safe to depend on it to always work.
 
-### Run. 
+### Run
 In Android Studio, you need to run the local development server using the gradle task `appengineStart` which starts the development server in non-blocking mode. It is not recommended to use `appengienRun` from within Android Studio. If you use `appengineRun` you may block Android Studio from using the gradle daemon to launch any gradle further related tasks.
 
 ### Deploy
