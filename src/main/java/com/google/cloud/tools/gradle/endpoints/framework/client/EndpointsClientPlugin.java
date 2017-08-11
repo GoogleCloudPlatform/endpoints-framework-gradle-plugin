@@ -29,7 +29,7 @@ import org.gradle.api.Project;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
-import org.gradle.api.tasks.compile.JavaCompile;
+import org.gradle.api.tasks.compile.AbstractCompile;
 
 /**
  * Plugin definition for Endpoints Clients. All tasks from this plugin are internal, it will
@@ -201,33 +201,26 @@ public class EndpointsClientPlugin implements Plugin<Project> {
             });
 
     if (project.getExtensions().findByName("android") != null) {
+      // special handling for android is done in groovy by the android specific plugin
       project.apply(
           ImmutableMap.of("plugin", "com.google.cloud.tools.endpoints-framework-android-client"));
     } else {
       // this is for standard java applications
       // since we are generating sources add the gen-src directory to the main java sourceset
-      project.afterEvaluate(
-          new Action<Project>() {
-            @Override
-            public void execute(final Project project) {
-              project
-                  .getTasks()
-                  .withType(
-                      JavaCompile.class,
-                      new Action<JavaCompile>() {
-                        @Override
-                        public void execute(JavaCompile javaCompile) {
-                          javaCompile.dependsOn(GENERATE_CLIENT_LIBRARY_SRC_TASK);
-                        }
-                      });
-
-              JavaPluginConvention java =
-                  project.getConvention().getPlugin(JavaPluginConvention.class);
-              SourceSetContainer sourceSets = java.getSourceSets();
-              SourceSet mainSrc = sourceSets.getByName("main");
-              mainSrc.getJava().srcDir(extension.getGenSrcDir());
-            }
-          });
+      project
+          .getTasks()
+          .withType(
+              AbstractCompile.class,
+              new Action<AbstractCompile>() {
+                @Override
+                public void execute(AbstractCompile compile) {
+                  compile.dependsOn(GENERATE_CLIENT_LIBRARY_SRC_TASK);
+                }
+              });
+      JavaPluginConvention java = project.getConvention().getPlugin(JavaPluginConvention.class);
+      SourceSetContainer sourceSets = java.getSourceSets();
+      SourceSet mainSrc = sourceSets.getByName("main");
+      mainSrc.getJava().srcDir(extension.getGenSrcDir());
     }
   }
 }

@@ -59,6 +59,8 @@ Discovery documents will be written to `build/endpointsDiscoveryDocs`
 In your client Java app, add the following plugin to your build.gradle:
 
 ```Groovy
+// apply this plugin after you have applied other plugins
+// because it uses the state of other plugins
 apply plugin: 'com.google.cloud.tools.endpoints-framework-client'
 ```
 
@@ -72,7 +74,8 @@ The plugin exposes intermodule endpoints configuration through a custom dependen
 * `endpointsServer` - Configure generation of source from another module in the project
 
 #### Usage (from discovery docs)
-In your build.gradle define the location of the discovery document
+In your build.gradle define the location of the discovery document in the
+`endpointsClient` configuration closure.
 
 ```Groovy
 endpointsClient {
