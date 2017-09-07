@@ -1,4 +1,5 @@
 ![project status image](https://img.shields.io/badge/stability-experimental-orange.svg)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.google.cloud.tools/endpoints-framework-gradle-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.google.cloud.tools/endpoints-framework-gradle-plugin)
 # Endpoints Framework Gradle Plugin
 
 This Gradle plugin provides tasks and configurations to build and connect Endpoints Framework projects.
