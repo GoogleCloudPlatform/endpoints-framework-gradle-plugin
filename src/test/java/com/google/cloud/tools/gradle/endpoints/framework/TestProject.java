@@ -81,12 +81,14 @@ public class TestProject {
 
   // Inject an endpoints plugin hostname into the build.gradle file.
   private void injectHostname(String hostname) throws IOException {
-    injectIntoBuildGradleFile("/\\*endpoints-plugin-hostname\\*/", "endpointsServer.hostname = '" + hostname + "'");
+    injectIntoBuildGradleFile(
+        "/\\*endpoints-plugin-hostname\\*/", "endpointsServer.hostname = '" + hostname + "'");
   }
 
   // Inject an endpoints plugin basePath into the build.gradle file.
   private void injectBasePath(String basePath) throws IOException {
-    injectIntoBuildGradleFile("/\\*endpoints-plugin-basePath\\*/", "endpointsServer.basePath = '" + basePath + "'");
+    injectIntoBuildGradleFile(
+        "/\\*endpoints-plugin-basePath\\*/", "endpointsServer.basePath = '" + basePath + "'");
   }
 
   // Helper method to replace text inside the build.gradle file.

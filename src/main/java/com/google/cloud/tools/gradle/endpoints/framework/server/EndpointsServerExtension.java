@@ -74,7 +74,11 @@ public class EndpointsServerExtension {
     this.hostname = hostname;
   }
 
-  public String getBasePath() { return basePath; }
+  public String getBasePath() {
+    return basePath;
+  }
 
-  public void setBasePath(String basePath) { this.basePath = basePath; }
+  public void setBasePath(String basePath) {
+    this.basePath = basePath;
+  }
 }
