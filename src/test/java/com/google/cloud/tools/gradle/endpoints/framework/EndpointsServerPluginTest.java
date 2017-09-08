@@ -186,6 +186,17 @@ public class EndpointsServerPluginTest {
   }
 
   @Test
+  public void testOpenApiDocs_basePath() throws IOException, URISyntaxException {
+    BuildResult buildResult =
+            new TestProject(testProjectDir.getRoot(), "projects/server")
+                    .basePath("/a/different/path")
+                    .gradleRunnerArguments("endpointsOpenApiDocs")
+                    .build();
+
+    assertOpenApiDocGeneration("/a/different/path", DEFAULT_BASEPATH);
+  }
+
+  @Test
   public void testOpenApiDocs_application() throws IOException, URISyntaxException {
     BuildResult buildResult =
         new TestProject(testProjectDir.getRoot(), "projects/server")
