@@ -43,6 +43,7 @@ public class GenerateClientLibsTask extends DefaultTask {
 
   private File clientLibDir;
   private String hostname;
+  private String basePath;
   private List<String> serviceClasses;
   private File webAppDir;
 
@@ -92,6 +93,16 @@ public class GenerateClientLibsTask extends DefaultTask {
     this.hostname = hostname;
   }
 
+  @Input
+  @Optional
+  public String getBasePath() {
+    return basePath;
+  }
+
+  public void setBasePath(String basePath) {
+    this.basePath = basePath;
+  }
+
   @TaskAction
   void generateClientLibs() throws Exception {
 
@@ -127,6 +138,10 @@ public class GenerateClientLibsTask extends DefaultTask {
     if (!Strings.isNullOrEmpty(hostname)) {
       params.add("-h");
       params.add(hostname);
+    }
+    if (!Strings.isNullOrEmpty(basePath)) {
+      params.add("-p");
+      params.add(basePath);
     }
     params.addAll(serviceClasses);
 

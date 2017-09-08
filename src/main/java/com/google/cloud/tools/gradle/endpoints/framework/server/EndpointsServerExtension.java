@@ -31,6 +31,7 @@ public class EndpointsServerExtension {
   private File clientLibDir;
   private List<String> serviceClasses;
   private String hostname;
+  private String basePath;
 
   /** Constructor. */
   public EndpointsServerExtension(Project project) {
@@ -72,4 +73,8 @@ public class EndpointsServerExtension {
   public void setHostname(String hostname) {
     this.hostname = hostname;
   }
+
+  public String getBasePath() { return basePath; }
+
+  public void setBasePath(String basePath) { this.basePath = basePath; }
 }

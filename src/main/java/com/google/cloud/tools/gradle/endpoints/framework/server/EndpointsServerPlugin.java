@@ -189,6 +189,7 @@ public class EndpointsServerPlugin implements Plugin<Project> {
                         genClientLibs.setClassesDir(classesDir);
                         genClientLibs.setClientLibDir(extension.getClientLibDir());
                         genClientLibs.setHostname(extension.getHostname());
+                        genClientLibs.setBasePath(extension.getBasePath());
                         genClientLibs.setServiceClasses(extension.getServiceClasses());
                         genClientLibs.setWebAppDir(
                             project

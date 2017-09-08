@@ -30,6 +30,7 @@ public class TestProject {
   private final String projectPathInResources;
 
   private String hostname;
+  private String basePath;
   private String application;
   private String[] gradleRunnerArgs = {"assemble"};
 
@@ -40,6 +41,11 @@ public class TestProject {
 
   public TestProject hostname(String hostname) {
     this.hostname = hostname;
+    return this;
+  }
+
+  public TestProject basePath(String basePath) {
+    this.basePath = basePath;
     return this;
   }
 
@@ -63,6 +69,9 @@ public class TestProject {
     if (hostname != null) {
       injectHostname(hostname);
     }
+    if (basePath != null) {
+      injectBasePath(basePath);
+    }
     return GradleRunner.create()
         .withProjectDir(testDir)
         .withPluginClasspath()
@@ -70,13 +79,21 @@ public class TestProject {
         .build();
   }
 
-  // inject an endpoints plugin hostname into the pom.xml
+  // Inject an endpoints plugin hostname into the build.gradle file.
   private void injectHostname(String hostname) throws IOException {
+    injectIntoBuildGradleFile("/\\*endpoints-plugin-hostname\\*/", "endpointsServer.hostname = '" + hostname + "'");
+  }
+
+  // Inject an endpoints plugin basePath into the build.gradle file.
+  private void injectBasePath(String basePath) throws IOException {
+    injectIntoBuildGradleFile("/\\*endpoints-plugin-basePath\\*/", "endpointsServer.basePath = '" + basePath + "'");
+  }
+
+  // Helper method to replace text inside the build.gradle file.
+  private void injectIntoBuildGradleFile(String regex, String replacement) throws IOException {
     File buildGradle = new File(testDir, "build.gradle");
     String buildGradleContents = FileUtils.readFileToString(buildGradle);
-    buildGradleContents =
-        buildGradleContents.replaceAll(
-            "/\\*endpoints-plugin-hostname\\*/", "endpointsServer.hostname = '" + hostname + "'");
+    buildGradleContents = buildGradleContents.replaceAll(regex, replacement);
     FileUtils.writeStringToFile(buildGradle, buildGradleContents);
   }
 
