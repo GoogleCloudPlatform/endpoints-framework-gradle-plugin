@@ -39,6 +39,7 @@ public class GenerateDiscoveryDocsTask extends DefaultTask {
 
   private File discoveryDocDir;
   private String hostname;
+  private String basePath;
   private List<String> serviceClasses;
   private File webAppDir;
 
@@ -88,6 +89,16 @@ public class GenerateDiscoveryDocsTask extends DefaultTask {
     this.hostname = hostname;
   }
 
+  @Optional
+  @Input
+  public String getBasePath() {
+    return basePath;
+  }
+
+  public void setBasePath(String basePath) {
+    this.basePath = basePath;
+  }
+
   /** Task entry point. */
   @TaskAction
   void generateDiscoveryDocs() throws Exception {
@@ -116,6 +127,10 @@ public class GenerateDiscoveryDocsTask extends DefaultTask {
     if (!Strings.isNullOrEmpty(hostname)) {
       params.add("-h");
       params.add(hostname);
+    }
+    if (!Strings.isNullOrEmpty(basePath)) {
+      params.add("-p");
+      params.add(basePath);
     }
     params.addAll(getServiceClasses());
 

@@ -134,6 +134,17 @@ public class EndpointsServerPluginTest {
   }
 
   @Test
+  public void testDiscoveryDocs_basePath() throws IOException, URISyntaxException {
+    BuildResult buildResult =
+            new TestProject(testProjectDir.getRoot(), "projects/server")
+                    .basePath("/a/different/path")
+                    .gradleRunnerArguments("endpointsDiscoveryDocs")
+                    .build();
+
+    assertDiscoveryDocGeneration("https://" + DEFAULT_HOSTNAME + "/a/different/path", DEFAULT_URL);
+  }
+
+  @Test
   public void testDiscoveryDocs_application() throws IOException, URISyntaxException {
     BuildResult buildResult =
         new TestProject(testProjectDir.getRoot(), "projects/server")

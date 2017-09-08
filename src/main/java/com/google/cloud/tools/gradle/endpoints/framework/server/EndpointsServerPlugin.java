@@ -109,6 +109,7 @@ public class EndpointsServerPlugin implements Plugin<Project> {
                         genDiscoveryDocs.setClassesDir(classesDir);
                         genDiscoveryDocs.setDiscoveryDocDir(extension.getDiscoveryDocDir());
                         genDiscoveryDocs.setHostname(extension.getHostname());
+                        genDiscoveryDocs.setBasePath(extension.getBasePath());
                         genDiscoveryDocs.setServiceClasses(extension.getServiceClasses());
                         genDiscoveryDocs.setWebAppDir(
                             project
