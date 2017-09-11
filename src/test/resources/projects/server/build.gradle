@@ -46,3 +46,4 @@ dependencies {
 }
 
 /*endpoints-plugin-hostname*/
+/*endpoints-plugin-basePath*/

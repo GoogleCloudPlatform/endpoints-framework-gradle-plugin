@@ -42,6 +42,7 @@ public class GenerateOpenApiDocsTask extends DefaultTask {
   private File webAppDir;
   private List<String> serviceClasses;
   private String hostname;
+  private String basePath;
 
   @InputDirectory
   public File getClassesDir() {
@@ -89,6 +90,16 @@ public class GenerateOpenApiDocsTask extends DefaultTask {
     this.hostname = hostname;
   }
 
+  @Optional
+  @Input
+  public String getBasePath() {
+    return basePath;
+  }
+
+  public void setBasePath(String basePath) {
+    this.basePath = basePath;
+  }
+
   /** Task entry point. */
   @TaskAction
   void generateOpenApiDocs() throws Exception {
@@ -117,6 +128,10 @@ public class GenerateOpenApiDocsTask extends DefaultTask {
     if (!Strings.isNullOrEmpty(hostname)) {
       params.add("-h");
       params.add(hostname);
+    }
+    if (!Strings.isNullOrEmpty(basePath)) {
+      params.add("-p");
+      params.add(basePath);
     }
     params.addAll(getServiceClasses());
 

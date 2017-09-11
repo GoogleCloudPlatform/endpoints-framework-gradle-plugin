@@ -109,6 +109,7 @@ public class EndpointsServerPlugin implements Plugin<Project> {
                         genDiscoveryDocs.setClassesDir(classesDir);
                         genDiscoveryDocs.setDiscoveryDocDir(extension.getDiscoveryDocDir());
                         genDiscoveryDocs.setHostname(extension.getHostname());
+                        genDiscoveryDocs.setBasePath(extension.getBasePath());
                         genDiscoveryDocs.setServiceClasses(extension.getServiceClasses());
                         genDiscoveryDocs.setWebAppDir(
                             project
@@ -148,6 +149,7 @@ public class EndpointsServerPlugin implements Plugin<Project> {
                                 .getClassesDir();
                         genOpenApiDocs.setClassesDir(classesDir);
                         genOpenApiDocs.setHostname(extension.getHostname());
+                        genOpenApiDocs.setBasePath(extension.getBasePath());
                         genOpenApiDocs.setOpenApiDocDir(extension.getOpenApiDocDir());
                         genOpenApiDocs.setServiceClasses(extension.getServiceClasses());
                         genOpenApiDocs.setWebAppDir(
@@ -189,6 +191,7 @@ public class EndpointsServerPlugin implements Plugin<Project> {
                         genClientLibs.setClassesDir(classesDir);
                         genClientLibs.setClientLibDir(extension.getClientLibDir());
                         genClientLibs.setHostname(extension.getHostname());
+                        genClientLibs.setBasePath(extension.getBasePath());
                         genClientLibs.setServiceClasses(extension.getServiceClasses());
                         genClientLibs.setWebAppDir(
                             project
