@@ -1,4 +1,4 @@
-![project status image](https://img.shields.io/badge/stability-experimental-orange.svg)
+![project status image](https://img.shields.io/badge/stability-stable-brightgreen.svg)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.google.cloud.tools/endpoints-framework-gradle-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.google.cloud.tools/endpoints-framework-gradle-plugin)
 # Endpoints Framework Gradle Plugin
 
