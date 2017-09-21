@@ -10,7 +10,7 @@ All notable changes to this project will be documented in this file.
 
 ## 1.0.2
 ### Added
-- Add basePath to openApiDocs, clientLibs, and discoveryDocs generation ([#54]https://github.com/GoogleCloudPlatform/endpoints-framework-gradle-plugin/issues/54))
+- Add basePath to openApiDocs, clientLibs, and discoveryDocs generation ([#54](https://github.com/GoogleCloudPlatform/endpoints-framework-gradle-plugin/issues/54))
 
 ## 1.0.1
 ### Fixed
