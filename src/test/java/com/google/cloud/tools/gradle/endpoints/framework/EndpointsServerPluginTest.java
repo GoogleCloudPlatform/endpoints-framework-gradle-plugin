@@ -25,14 +25,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.util.zip.ZipFile;
-import org.gradle.testkit.runner.BuildResult;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 /** Test endpoints server plugin builds. */
+@RunWith(Parameterized.class)
 public class EndpointsServerPluginTest {
 
   private static final String DEFAULT_HOSTNAME = "myapi.appspot.com";
@@ -50,23 +52,26 @@ public class EndpointsServerPluginTest {
 
   @Rule public TemporaryFolder testProjectDir = new TemporaryFolder();
 
+  @Parameterized.Parameters
+  public static String[] serverProjectBaseDirs() {
+    return new String[] {"projects/server", "projects/server-servlet-3.0"};
+  }
+
+  @Parameterized.Parameter public String projectBaseDir;
+
   @Test
   public void testClientLibs() throws IOException, URISyntaxException {
-    BuildResult buildResult =
-        new TestProject(testProjectDir.getRoot(), "projects/server")
-            .gradleRunnerArguments("endpointsClientLibs")
-            .build();
+    newTestProject().gradleRunnerArguments("endpointsClientLibs").build();
 
     assertClientLibGeneration(DEFAULT_URL_VARIABLE, null);
   }
 
   @Test
   public void testClientLibs_hostname() throws IOException, URISyntaxException {
-    BuildResult buildResult =
-        new TestProject(testProjectDir.getRoot(), "projects/server")
-            .hostname("my.hostname.com")
-            .gradleRunnerArguments("endpointsClientLibs")
-            .build();
+    newTestProject()
+        .hostname("my.hostname.com")
+        .gradleRunnerArguments("endpointsClientLibs")
+        .build();
 
     assertClientLibGeneration(
         DEFAULT_URL_PREFIX + "\"https://my.hostname.com" + DEFAULT_BASEPATH + "/\";",
@@ -75,11 +80,10 @@ public class EndpointsServerPluginTest {
 
   @Test
   public void testClientLibs_basePath() throws IOException, URISyntaxException {
-    BuildResult buildResult =
-        new TestProject(testProjectDir.getRoot(), "projects/server")
-            .basePath("/a/different/path")
-            .gradleRunnerArguments("endpointsClientLibs")
-            .build();
+    newTestProject()
+        .basePath("/a/different/path")
+        .gradleRunnerArguments("endpointsClientLibs")
+        .build();
 
     assertClientLibGeneration(
         DEFAULT_URL_PREFIX + "\"https://" + DEFAULT_HOSTNAME + "/a/different/path/\";",
@@ -88,11 +92,10 @@ public class EndpointsServerPluginTest {
 
   @Test
   public void testClientLibs_application() throws IOException, URISyntaxException {
-    BuildResult buildResult =
-        new TestProject(testProjectDir.getRoot(), "projects/server")
-            .applicationId("gradle-test")
-            .gradleRunnerArguments("endpointsClientLibs")
-            .build();
+    newTestProject()
+        .applicationId("gradle-test")
+        .gradleRunnerArguments("endpointsClientLibs")
+        .build();
 
     assertClientLibGeneration(
         DEFAULT_URL_PREFIX + "\"https://gradle-test.appspot.com" + DEFAULT_BASEPATH + "/\";",
@@ -118,43 +121,37 @@ public class EndpointsServerPluginTest {
 
   @Test
   public void testDiscoveryDocs() throws IOException, URISyntaxException {
-    BuildResult buildResult =
-        new TestProject(testProjectDir.getRoot(), "projects/server")
-            .gradleRunnerArguments("endpointsDiscoveryDocs")
-            .build();
+    newTestProject().gradleRunnerArguments("endpointsDiscoveryDocs").build();
 
     assertDiscoveryDocGeneration(DEFAULT_URL, null);
   }
 
   @Test
   public void testDiscoveryDocs_hostname() throws IOException, URISyntaxException {
-    BuildResult buildResult =
-        new TestProject(testProjectDir.getRoot(), "projects/server")
-            .hostname("my.hostname.com")
-            .gradleRunnerArguments("endpointsDiscoveryDocs")
-            .build();
+    newTestProject()
+        .hostname("my.hostname.com")
+        .gradleRunnerArguments("endpointsDiscoveryDocs")
+        .build();
 
     assertDiscoveryDocGeneration("https://my.hostname.com/_ah/api", DEFAULT_URL);
   }
 
   @Test
   public void testDiscoveryDocs_basePath() throws IOException, URISyntaxException {
-    BuildResult buildResult =
-        new TestProject(testProjectDir.getRoot(), "projects/server")
-            .basePath("/a/different/path")
-            .gradleRunnerArguments("endpointsDiscoveryDocs")
-            .build();
+    newTestProject()
+        .basePath("/a/different/path")
+        .gradleRunnerArguments("endpointsDiscoveryDocs")
+        .build();
 
     assertDiscoveryDocGeneration("https://" + DEFAULT_HOSTNAME + "/a/different/path", DEFAULT_URL);
   }
 
   @Test
   public void testDiscoveryDocs_application() throws IOException, URISyntaxException {
-    BuildResult buildResult =
-        new TestProject(testProjectDir.getRoot(), "projects/server")
-            .applicationId("gradle-test")
-            .gradleRunnerArguments("endpointsDiscoveryDocs")
-            .build();
+    newTestProject()
+        .applicationId("gradle-test")
+        .gradleRunnerArguments("endpointsDiscoveryDocs")
+        .build();
 
     assertDiscoveryDocGeneration("https://gradle-test.appspot.com/_ah/api", DEFAULT_URL);
   }
@@ -170,53 +167,52 @@ public class EndpointsServerPluginTest {
 
   @Test
   public void testOpenApiDocs() throws IOException, URISyntaxException {
-    BuildResult buildResult =
-        new TestProject(testProjectDir.getRoot(), "projects/server")
-            .gradleRunnerArguments("endpointsOpenApiDocs")
-            .build();
+    newTestProject().gradleRunnerArguments("endpointsOpenApiDocs").build();
 
     assertOpenApiDocGeneration(DEFAULT_HOSTNAME, null);
   }
 
   @Test
   public void testOpenApiDocs_hostname() throws IOException, URISyntaxException {
-    BuildResult buildResult =
-        new TestProject(testProjectDir.getRoot(), "projects/server")
-            .hostname("my.hostname.com")
-            .gradleRunnerArguments("endpointsOpenApiDocs")
-            .build();
+    newTestProject()
+        .hostname("my.hostname.com")
+        .gradleRunnerArguments("endpointsOpenApiDocs")
+        .build();
 
     assertOpenApiDocGeneration("my.hostname.com", DEFAULT_HOSTNAME);
   }
 
   @Test
   public void testOpenApiDocs_basePath() throws IOException, URISyntaxException {
-    BuildResult buildResult =
-        new TestProject(testProjectDir.getRoot(), "projects/server")
-            .basePath("/a/different/path")
-            .gradleRunnerArguments("endpointsOpenApiDocs")
-            .build();
+    newTestProject()
+        .basePath("/a/different/path")
+        .gradleRunnerArguments("endpointsOpenApiDocs")
+        .build();
 
     assertOpenApiDocGeneration("/a/different/path", DEFAULT_BASEPATH);
   }
 
   @Test
   public void testOpenApiDocs_application() throws IOException, URISyntaxException {
-    BuildResult buildResult =
-        new TestProject(testProjectDir.getRoot(), "projects/server")
-            .applicationId("gradle-test")
-            .gradleRunnerArguments("endpointsOpenApiDocs")
-            .build();
+    newTestProject()
+        .applicationId("gradle-test")
+        .gradleRunnerArguments("endpointsOpenApiDocs")
+        .build();
 
     assertOpenApiDocGeneration("gradle-test.appspot.com", DEFAULT_HOSTNAME);
   }
 
   private void assertOpenApiDocGeneration(String expected, String unexpected) throws IOException {
     File openApiDoc = new File(testProjectDir.getRoot(), OPEN_API_DOC_PATH);
+    Assert.assertTrue("OpenApiDoc file does not exist: " + OPEN_API_DOC_PATH, openApiDoc.exists());
     String openApi = Files.toString(openApiDoc, Charsets.UTF_8);
     Assert.assertThat(openApi, CoreMatchers.containsString(expected));
     if (unexpected != null) {
       Assert.assertThat(openApi, CoreMatchers.not(CoreMatchers.containsString(unexpected)));
     }
+  }
+
+  private TestProject newTestProject() {
+    return new TestProject(testProjectDir.getRoot(), projectBaseDir);
   }
 }

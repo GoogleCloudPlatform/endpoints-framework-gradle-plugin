@@ -18,10 +18,12 @@ package com.google.cloud.tools.gradle.endpoints.framework.server.task;
 
 import com.google.api.server.spi.tools.EndpointsTool;
 import com.google.api.server.spi.tools.GetOpenApiDocAction;
+import com.google.cloud.tools.gradle.endpoints.framework.server.task.scan.AnnotationServletScanner;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.plugins.JavaPluginConvention;
@@ -31,9 +33,13 @@ import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Endpoints task to download a openapi document from the endpoints service. */
 public class GenerateOpenApiDocsTask extends DefaultTask {
+
+  private Logger log = LoggerFactory.getLogger(GenerateOpenApiDocsTask.class);
 
   // classesDir is only for detecting that the project has changed
   private File classesDir;
@@ -115,27 +121,30 @@ public class GenerateOpenApiDocsTask extends DefaultTask {
             .getRuntimeClasspath()
             .getAsPath();
 
-    List<String> params =
-        new ArrayList<>(
-            Arrays.asList(
+    ImmutableList.Builder<String> paramsBuilder =
+        ImmutableList.<String>builder()
+            .add(
                 GetOpenApiDocAction.NAME,
                 "-o",
                 computeOpenApiDocPath(),
                 "-cp",
                 classpath,
                 "-w",
-                webAppDir.getPath()));
+                webAppDir.getPath());
     if (!Strings.isNullOrEmpty(hostname)) {
-      params.add("-h");
-      params.add(hostname);
+      paramsBuilder.add("-h", hostname);
     }
     if (!Strings.isNullOrEmpty(basePath)) {
-      params.add("-p");
-      params.add(basePath);
+      paramsBuilder.add("-p", basePath);
     }
-    params.addAll(getServiceClasses());
-
-    new EndpointsTool().execute(params.toArray(new String[params.size()]));
+    Collection<String> allServiceClasses = new HashSet<>();
+    allServiceClasses.addAll(getServiceClasses());
+    Collection<String> apiClassesInSourceAnnotations =
+        new AnnotationServletScanner(getProject()).findApiClassesInSourceAnnotations();
+    allServiceClasses.addAll(apiClassesInSourceAnnotations);
+    paramsBuilder.addAll(allServiceClasses);
+    String[] execParams = paramsBuilder.build().toArray(new String[] {});
+    new EndpointsTool().execute(execParams);
   }
 
   private String computeOpenApiDocPath() {
