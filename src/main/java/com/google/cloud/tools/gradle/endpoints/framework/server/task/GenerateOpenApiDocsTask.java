@@ -33,13 +33,9 @@ import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskAction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /** Endpoints task to download a openapi document from the endpoints service. */
 public class GenerateOpenApiDocsTask extends DefaultTask {
-
-  private Logger log = LoggerFactory.getLogger(GenerateOpenApiDocsTask.class);
 
   // classesDir is only for detecting that the project has changed
   private File classesDir;
