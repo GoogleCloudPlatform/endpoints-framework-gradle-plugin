@@ -22,6 +22,7 @@ import com.google.cloud.tools.gradle.endpoints.framework.server.task.scan.Annota
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
+import java.net.MalformedURLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -129,14 +130,19 @@ public class GenerateOpenApiDocsTask extends DefaultTask {
     if (!Strings.isNullOrEmpty(basePath)) {
       paramsBuilder.add("-p", basePath);
     }
+    paramsBuilder.addAll(getMergedServiceClasses());
+    String[] execParams = paramsBuilder.build().toArray(new String[] {});
+    new EndpointsTool().execute(execParams);
+  }
+
+  private Collection<String> getMergedServiceClasses()
+      throws MalformedURLException, ClassNotFoundException {
     Collection<String> allServiceClasses = new HashSet<>();
     allServiceClasses.addAll(getServiceClasses());
     Collection<String> apiClassesInSourceAnnotations =
         new AnnotationServletScanner(getProject()).findApiClassesInSourceAnnotations();
     allServiceClasses.addAll(apiClassesInSourceAnnotations);
-    paramsBuilder.addAll(allServiceClasses);
-    String[] execParams = paramsBuilder.build().toArray(new String[] {});
-    new EndpointsTool().execute(execParams);
+    return allServiceClasses;
   }
 
   private String computeOpenApiDocPath() {

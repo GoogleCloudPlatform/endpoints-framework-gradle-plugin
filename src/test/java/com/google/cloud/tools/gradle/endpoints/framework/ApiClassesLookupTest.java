@@ -5,8 +5,6 @@ import static org.junit.Assert.assertEquals;
 import com.google.cloud.tools.gradle.endpoints.framework.server.task.scan.ApiClassesLookup;
 import com.google.common.collect.ImmutableSet;
 import java.util.Collection;
-import javax.servlet.annotation.WebInitParam;
-import javax.servlet.annotation.WebServlet;
 import org.junit.Test;
 
 public class ApiClassesLookupTest {
@@ -26,14 +24,4 @@ public class ApiClassesLookupTest {
     Collection<String> foundApiClasses = testee.apiClassNames();
     assertEquals(expectedApiClasses, foundApiClasses);
   }
-
-  @WebServlet(initParams = {@WebInitParam(name = "services", value = "expectedApiClassAlpha")})
-  private static class TestAnnotatedServletAlpha {}
-
-  @WebServlet(
-      initParams = {
-        @WebInitParam(name = "services", value = "expectedApiClassBeta,expectedApiClassBeta2")
-      }
-  )
-  private static class TestAnnotatedServletBeta {}
 }

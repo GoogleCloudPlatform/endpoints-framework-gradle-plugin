@@ -55,6 +55,23 @@ public class AnnotationServletScanner {
     URLClassLoader classLoader =
         URLClassLoader.newInstance(
             new URL[] {projectClassesDir.toURI().toURL(), servletJarUrl, endpointsUrl});
+    Set<Class<?>> servletClasses = getServletClasses(projectClassesDir, classLoader);
+    if (servletClasses.isEmpty()) {
+      return emptySet();
+    }
+    try {
+      return new ApiClassesLookup(servletClasses, classLoader).apiClassNames();
+    } catch (NoSuchFieldException
+        | IllegalAccessException
+        | InvocationTargetException
+        | NoSuchMethodException e) {
+      throw new GradleException("Failed to read API data from @WebService annotations", e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private Set<Class<?>> getServletClasses(File projectClassesDir, URLClassLoader classLoader)
+      throws ClassNotFoundException, MalformedURLException {
     Class<?> httpServletClass = classLoader.loadClass("com.google.api.server.spi.EndpointsServlet");
 
     Reflections reflections =
@@ -64,18 +81,7 @@ public class AnnotationServletScanner {
                 .setScanners(new SubTypesScanner(true))
                 .addUrls(projectClassesDir.toURI().toURL()));
 
-    Set<Class<?>> subTypesOf = (Set<Class<?>>) reflections.getSubTypesOf(httpServletClass);
-    if (subTypesOf.isEmpty()) {
-      return emptySet();
-    }
-    try {
-      return new ApiClassesLookup(subTypesOf, classLoader).apiClassNames();
-    } catch (NoSuchFieldException
-        | IllegalAccessException
-        | InvocationTargetException
-        | NoSuchMethodException e) {
-      throw new GradleException("Failed to read API data from @WebService annotations", e);
-    }
+    return (Set<Class<?>>) reflections.getSubTypesOf(httpServletClass);
   }
 
   private File getServletApiDependencyJar(final String version) {
