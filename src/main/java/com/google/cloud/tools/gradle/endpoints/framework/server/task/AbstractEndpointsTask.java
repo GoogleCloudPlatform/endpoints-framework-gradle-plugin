@@ -72,28 +72,14 @@ public abstract class AbstractEndpointsTask extends DefaultTask {
 
   String[] initDirsAndGetExecParams(boolean cleanOuptutDir, String... additionalExecParams) {
     if (cleanOuptutDir) {
-      File outputDir = getOutputDir();
-      if (!outputDir.isDirectory()) {
-        outputDir = outputDir.getParentFile();
-      }
-      getProject().delete(outputDir);
-      getProject().mkdir(outputDir);
+      recreateOutputDir();
     }
-
-    String classpath =
-        getProject()
-            .getConvention()
-            .getPlugin(JavaPluginConvention.class)
-            .getSourceSets()
-            .getByName(SourceSet.MAIN_SOURCE_SET_NAME)
-            .getRuntimeClasspath()
-            .getAsPath();
 
     ImmutableList.Builder<String> paramsBuilder =
         ImmutableList.<String>builder()
             .add(actionName())
             .add("-o", getOutputDir().getPath())
-            .add("-cp", classpath)
+            .add("-cp", getMainSourcesClasspath())
             .add(additionalExecParams)
             .add("-w", webAppDir.getPath());
     if (!Strings.isNullOrEmpty(hostname)) {
@@ -104,6 +90,25 @@ public abstract class AbstractEndpointsTask extends DefaultTask {
     }
     paramsBuilder.addAll(getMergedServiceClasses());
     return paramsBuilder.build().toArray(new String[] {});
+  }
+
+  private String getMainSourcesClasspath() {
+    return getProject()
+        .getConvention()
+        .getPlugin(JavaPluginConvention.class)
+        .getSourceSets()
+        .getByName(SourceSet.MAIN_SOURCE_SET_NAME)
+        .getRuntimeClasspath()
+        .getAsPath();
+  }
+
+  private void recreateOutputDir() {
+    File outputDir = getOutputDir();
+    if (!outputDir.isDirectory()) {
+      outputDir = outputDir.getParentFile();
+    }
+    getProject().delete(outputDir);
+    getProject().mkdir(outputDir);
   }
 
   private Collection<String> getMergedServiceClasses() {
