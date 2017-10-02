@@ -119,14 +119,10 @@ public class GenerateOpenApiDocsTask extends DefaultTask {
 
     ImmutableList.Builder<String> paramsBuilder =
         ImmutableList.<String>builder()
-            .add(
-                GetOpenApiDocAction.NAME,
-                "-o",
-                computeOpenApiDocPath(),
-                "-cp",
-                classpath,
-                "-w",
-                webAppDir.getPath());
+            .add(GetOpenApiDocAction.NAME)
+            .add("-o", computeOpenApiDocPath())
+            .add("-cp", classpath)
+            .add("-w", webAppDir.getPath());
     if (!Strings.isNullOrEmpty(hostname)) {
       paramsBuilder.add("-h", hostname);
     }
