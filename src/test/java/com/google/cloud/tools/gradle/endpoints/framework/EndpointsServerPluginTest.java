@@ -27,7 +27,7 @@ import java.net.URISyntaxException;
 import java.util.zip.ZipFile;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
@@ -50,13 +50,7 @@ public class EndpointsServerPluginTest {
       "testApi/src/main/java/com/example/testApi/TestApi.java";
   private static final String OPEN_API_DOC_PATH = "build/endpointsOpenApiDocs/openapi.json";
 
-  //  @Rule
-  public TemporaryFolder testProjectDir = new TemporaryFolder();
-
-  @Before
-  public void setUp() throws Exception {
-    testProjectDir.create();
-  }
+  @Rule public TemporaryFolder testProjectDir = new TemporaryFolder();
 
   @Parameterized.Parameters
   public static String[] serverProjectBaseDirs() {
