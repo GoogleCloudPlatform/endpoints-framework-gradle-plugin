@@ -18,40 +18,14 @@ package com.google.cloud.tools.gradle.endpoints.framework.server.task;
 
 import com.google.api.server.spi.tools.EndpointsTool;
 import com.google.api.server.spi.tools.GetOpenApiDocAction;
-import com.google.common.base.Strings;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import org.gradle.api.DefaultTask;
-import org.gradle.api.plugins.JavaPluginConvention;
-import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.InputDirectory;
-import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
-import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskAction;
 
 /** Endpoints task to download a openapi document from the endpoints service. */
-public class GenerateOpenApiDocsTask extends DefaultTask {
-
-  // classesDir is only for detecting that the project has changed
-  private File classesDir;
+public class GenerateOpenApiDocsTask extends AbstractEndpointsTask {
 
   private File openApiDocDir;
-  private File webAppDir;
-  private List<String> serviceClasses;
-  private String hostname;
-  private String basePath;
-
-  @InputDirectory
-  public File getClassesDir() {
-    return classesDir;
-  }
-
-  public void setClassesDir(File classesDir) {
-    this.classesDir = classesDir;
-  }
 
   @OutputDirectory
   public File getOpenApiDocDir() {
@@ -62,83 +36,20 @@ public class GenerateOpenApiDocsTask extends DefaultTask {
     this.openApiDocDir = openApiDocDir;
   }
 
-  @InputDirectory
-  public File getWebAppDir() {
-    return webAppDir;
-  }
-
-  public void setWebAppDir(File webAppDir) {
-    this.webAppDir = webAppDir;
-  }
-
-  @Input
-  public List<String> getServiceClasses() {
-    return serviceClasses;
-  }
-
-  public void setServiceClasses(List<String> serviceClasses) {
-    this.serviceClasses = serviceClasses;
-  }
-
-  @Optional
-  @Input
-  public String getHostname() {
-    return hostname;
-  }
-
-  public void setHostname(String hostname) {
-    this.hostname = hostname;
-  }
-
-  @Optional
-  @Input
-  public String getBasePath() {
-    return basePath;
-  }
-
-  public void setBasePath(String basePath) {
-    this.basePath = basePath;
-  }
-
   /** Task entry point. */
   @TaskAction
   void generateOpenApiDocs() throws Exception {
-    getProject().delete(openApiDocDir);
-    getProject().mkdir(openApiDocDir);
-
-    String classpath =
-        getProject()
-            .getConvention()
-            .getPlugin(JavaPluginConvention.class)
-            .getSourceSets()
-            .getByName(SourceSet.MAIN_SOURCE_SET_NAME)
-            .getRuntimeClasspath()
-            .getAsPath();
-
-    List<String> params =
-        new ArrayList<>(
-            Arrays.asList(
-                GetOpenApiDocAction.NAME,
-                "-o",
-                computeOpenApiDocPath(),
-                "-cp",
-                classpath,
-                "-w",
-                webAppDir.getPath()));
-    if (!Strings.isNullOrEmpty(hostname)) {
-      params.add("-h");
-      params.add(hostname);
-    }
-    if (!Strings.isNullOrEmpty(basePath)) {
-      params.add("-p");
-      params.add(basePath);
-    }
-    params.addAll(getServiceClasses());
-
-    new EndpointsTool().execute(params.toArray(new String[params.size()]));
+    String[] execParams = initDirsAndGetExecParams(true);
+    new EndpointsTool().execute(execParams);
   }
 
-  private String computeOpenApiDocPath() {
-    return new File(openApiDocDir, "openapi.json").getPath();
+  @Override
+  String actionName() {
+    return GetOpenApiDocAction.NAME;
+  }
+
+  @Override
+  File getOutputDir() {
+    return new File(openApiDocDir, "openapi.json");
   }
 }
