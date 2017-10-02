@@ -4,7 +4,6 @@ import static java.util.Collections.emptySet;
 import static org.gradle.api.plugins.JavaPlugin.COMPILE_CLASSPATH_CONFIGURATION_NAME;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -42,44 +41,39 @@ public class AnnotationServletScanner {
   }
 
   /** Performs real classpath scan. */
-  public Collection<String> findApiClassesInSourceAnnotations()
-      throws MalformedURLException, ClassNotFoundException {
+  public Collection<String> findApiClassesInSourceAnnotations() {
     String servletApiVersion = getLatestServletApiVersion();
     if (StringUtils.isEmpty(servletApiVersion)) {
       return emptySet();
     }
 
-    File projectClassesDir = new File(project.getBuildDir().getPath() + "/classes/java/main");
-    URL servletJarUrl = getServletApiDependencyJar(servletApiVersion).toURI().toURL();
-    URL endpointsUrl = getEndpointsJar().toURI().toURL();
+    URL projectClassesUrl = toUrl(new File(project.getBuildDir().getPath() + "/classes/java/main"));
+    URL servletJarUrl = toUrl(getServletApiDependencyJar(servletApiVersion));
+    URL endpointsUrl = toUrl(getEndpointsJar());
     URLClassLoader classLoader =
-        URLClassLoader.newInstance(
-            new URL[] {projectClassesDir.toURI().toURL(), servletJarUrl, endpointsUrl});
-    Set<Class<?>> servletClasses = getServletClasses(projectClassesDir, classLoader);
+        URLClassLoader.newInstance(new URL[] {projectClassesUrl, servletJarUrl, endpointsUrl});
+    Set<Class<?>> servletClasses = getServletClasses(projectClassesUrl, classLoader);
     if (servletClasses.isEmpty()) {
       return emptySet();
     }
-    try {
-      return new ApiClassesLookup(servletClasses, classLoader).apiClassNames();
-    } catch (NoSuchFieldException
-        | IllegalAccessException
-        | InvocationTargetException
-        | NoSuchMethodException e) {
-      throw new GradleException("Failed to read API data from @WebService annotations", e);
-    }
+    return new ApiClassesLookup(servletClasses, classLoader).apiClassNames();
   }
 
   @SuppressWarnings("unchecked")
-  private Set<Class<?>> getServletClasses(File projectClassesDir, URLClassLoader classLoader)
-      throws ClassNotFoundException, MalformedURLException {
-    Class<?> httpServletClass = classLoader.loadClass("com.google.api.server.spi.EndpointsServlet");
+  private Set<Class<?>> getServletClasses(URL projectClassesLocation, URLClassLoader classLoader) {
+    Class<?> httpServletClass;
+    try {
+      httpServletClass = classLoader.loadClass("com.google.api.server.spi.EndpointsServlet");
+    } catch (ClassNotFoundException e) {
+      throw new GradleException("Cannot load class com.google.api.server.spi.EndpointsServlet", e);
+    }
 
     Reflections reflections =
         new Reflections(
             new ConfigurationBuilder()
                 .addClassLoader(classLoader)
                 .setScanners(new SubTypesScanner(true))
-                .addUrls(projectClassesDir.toURI().toURL()));
+                .addUrls(projectClassesLocation));
 
     return (Set<Class<?>>) reflections.getSubTypesOf(httpServletClass);
   }
@@ -117,5 +111,13 @@ public class AnnotationServletScanner {
       foundServletApiVersions.add(new DefaultArtifactVersion(dependency.getVersion()));
     }
     return foundServletApiVersions.last().toString();
+  }
+
+  private static URL toUrl(File file) {
+    try {
+      return file.toURI().toURL();
+    } catch (MalformedURLException e) {
+      throw new GradleException("Cannot compute URL for file");
+    }
   }
 }

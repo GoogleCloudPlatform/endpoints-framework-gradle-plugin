@@ -76,6 +76,8 @@ public class TestProject {
         .withProjectDir(testDir)
         .withPluginClasspath()
         .withArguments(gradleRunnerArgs)
+        .withDebug(true)
+        .forwardOutput()
         .build();
   }
 

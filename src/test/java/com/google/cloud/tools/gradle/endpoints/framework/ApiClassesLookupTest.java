@@ -15,7 +15,7 @@ public class ApiClassesLookupTest {
           getClass().getClassLoader());
 
   private final Collection<String> expectedApiClasses =
-      ImmutableSet.of("expectedApiClassAlpha", "expectedApiClassBeta", "expectedApiClassBeta2");
+      ImmutableSet.of("expectedApiClassAlpha", "betaOne", "betaTwo");
 
   public ApiClassesLookupTest() throws NoSuchMethodException, ClassNotFoundException {}
 

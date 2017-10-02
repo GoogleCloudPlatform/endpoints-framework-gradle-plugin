@@ -5,6 +5,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import org.apache.commons.lang3.StringUtils;
+import org.gradle.api.GradleException;
 
 public class ApiClassesLookup {
 
@@ -17,46 +19,59 @@ public class ApiClassesLookup {
   private final Method valueMethod;
 
   /** The only one constructor. */
-  public ApiClassesLookup(Collection<Class<?>> classesToScan, ClassLoader classLoader)
-      throws ClassNotFoundException, NoSuchMethodException {
+  public ApiClassesLookup(Collection<Class<?>> classesToScan, ClassLoader classLoader) {
     this.classesToScan = classesToScan;
-    Class<?> webInitParamAnnotationClass = classLoader.loadClass(JAVAX_WEB_INIT_PARAM);
-    nameMethod = webInitParamAnnotationClass.getDeclaredMethod("name", EMPTY_CLASS_ARRAY);
-    valueMethod = webInitParamAnnotationClass.getDeclaredMethod("value", EMPTY_CLASS_ARRAY);
+    try {
+      Class<?> webInitParamAnnotationClass = classLoader.loadClass(JAVAX_WEB_INIT_PARAM);
+      nameMethod = webInitParamAnnotationClass.getDeclaredMethod("name", EMPTY_CLASS_ARRAY);
+      valueMethod = webInitParamAnnotationClass.getDeclaredMethod("value", EMPTY_CLASS_ARRAY);
+    } catch (ClassNotFoundException | NoSuchMethodException e) {
+      throw new GradleException("Failed to read class metadata for " + JAVAX_WEB_INIT_PARAM, e);
+    }
   }
 
   /** Returns list of API class names found during classpath scan. */
-  public Collection<String> apiClassNames()
-      throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException,
-          InvocationTargetException, ClassNotFoundException {
+  public Collection<String> apiClassNames() {
 
     ImmutableSet.Builder<String> resultBuilder = ImmutableSet.builder();
     for (Class<?> servletClass : classesToScan) {
       for (Annotation annotation : servletClass.getAnnotations()) {
         Class<? extends Annotation> webServletAnnotationClass = annotation.annotationType();
         if (JAVAX_WEB_SERVLET.equals(webServletAnnotationClass.getName())) {
-          Object[] initParamsValue =
-              getInitParamsFromWebServletAnnotation(servletClass, webServletAnnotationClass);
-
-          for (Object webInitParam : initParamsValue) {
-            if ("services".equals(nameMethod.invoke(webInitParam))) {
-              String declaredServiceClassNames = valueMethod.invoke(webInitParam).toString();
-              resultBuilder.add(declaredServiceClassNames.split(","));
+          for (Object webInitParam :
+              getDeclaredInitParams(servletClass, webServletAnnotationClass)) {
+            if ("services".equals(invokeMethod(webInitParam, nameMethod))) {
+              String declaredServiceClassNames = invokeMethod(webInitParam, valueMethod).toString();
+              String[] split = StringUtils.split(declaredServiceClassNames, ",");
+              for (String declaredClass : split) {
+                resultBuilder.add(StringUtils.trim(declaredClass));
+              }
             }
           }
         }
       }
     }
-
     return resultBuilder.build();
   }
 
-  private Object[] getInitParamsFromWebServletAnnotation(
-      Class<?> servletClass, Class<? extends Annotation> webServletAnnotationClass)
-      throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+  private static Object invokeMethod(Object webInitParam, Method nameMethod) {
+    try {
+      return nameMethod.invoke(webInitParam);
+    } catch (IllegalAccessException | InvocationTargetException e) {
+      throw new GradleException("Failed to read init params metadata", e);
+    }
+  }
+
+  private static Object[] getDeclaredInitParams(
+      Class<?> servletClass, Class<? extends Annotation> webServletAnnotationClass) {
     Annotation webServletAnnotation = servletClass.getAnnotation(webServletAnnotationClass);
-    Method initParams =
-        webServletAnnotationClass.getDeclaredMethod("initParams", EMPTY_CLASS_ARRAY);
-    return (Object[]) initParams.invoke(webServletAnnotation);
+    try {
+      Method initParams =
+          webServletAnnotationClass.getDeclaredMethod("initParams", EMPTY_CLASS_ARRAY);
+      return (Object[]) invokeMethod(webServletAnnotation, initParams);
+    } catch (NoSuchMethodException e) {
+      throw new GradleException(
+          "Failed to read init params metadata for class " + servletClass.getName(), e);
+    }
   }
 }
