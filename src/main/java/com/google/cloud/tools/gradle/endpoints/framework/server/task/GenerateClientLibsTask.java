@@ -18,10 +18,12 @@ package com.google.cloud.tools.gradle.endpoints.framework.server.task;
 
 import com.google.api.server.spi.tools.EndpointsTool;
 import com.google.api.server.spi.tools.GetClientLibAction;
+import com.google.cloud.tools.gradle.endpoints.framework.server.task.scan.AnnotationServletScanner;
 import com.google.common.base.Strings;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.plugins.JavaPluginConvention;
@@ -144,6 +146,9 @@ public class GenerateClientLibsTask extends DefaultTask {
       params.add(basePath);
     }
     params.addAll(serviceClasses);
+    Collection<String> annotatedServiceClasses =
+        new AnnotationServletScanner(getProject()).findApiClassesInSourceAnnotations();
+    params.addAll(annotatedServiceClasses);
 
     new EndpointsTool().execute(params.toArray(new String[params.size()]));
   }
