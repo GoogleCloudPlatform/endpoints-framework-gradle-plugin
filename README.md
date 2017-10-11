@@ -4,6 +4,8 @@
 
 This Gradle plugin provides tasks and configurations to build and connect Endpoints Framework projects.
 
+Android Studio users see [transition guide](ANDROID_README.md).
+
 # Requirements
 
 [Gradle](http://gradle.org) is required to build and run the plugin.
