@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+## 1.0.3
+### Changed
+- Updated endpoints-framework-tools to version 2.0.9 ([#70](https://github.com/GoogleCloudPlatform/endpoints-framework-maven-plugin/pull/70))
+
 ## 1.0.2
 ### Added
 - Add basePath to openApiDocs, clientLibs, and discoveryDocs generation ([#54](https://github.com/GoogleCloudPlatform/endpoints-framework-gradle-plugin/issues/54))
