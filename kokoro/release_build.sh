@@ -9,4 +9,4 @@ set -x
 # sudo /opt/google-cloud-sdk/bin/gcloud components install app-engine-java
 
 cd github/endpoints-framework-gradle-plugin
-./gradlew check prepareRelease
+./gradlew check
