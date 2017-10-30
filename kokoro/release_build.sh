@@ -6,7 +6,7 @@ set -e
 set -x
 
 sudo /opt/google-cloud-sdk/bin/gcloud components update
-sudo /opt/google-cloud-sdk/bin/gcloud components install app-engine-java
+# sudo /opt/google-cloud-sdk/bin/gcloud components install app-engine-java
 
-cd github/app-gradle-plugin
+cd github/endpoints-framework-gradle-plugin
 ./gradlew check prepareRelease
