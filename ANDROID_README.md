@@ -54,7 +54,7 @@ dependencies {
   // compile 'com.google.appengine:appengine-endpoints-deps:1.9.51'
   ... 
   // add these (inject needs to be explicitly included now)
-  compile 'com.google.endpoints:endpoints-framework:2.0.7'
+  compile 'com.google.endpoints:endpoints-framework:2.0.9'
   compile 'javax.inject:javax.inject:1'
   ...
 }
