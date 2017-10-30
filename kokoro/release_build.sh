@@ -5,8 +5,5 @@ set -e
 # Display commands to stderr.
 set -x
 
-# sudo /opt/google-cloud-sdk/bin/gcloud components update
-# sudo /opt/google-cloud-sdk/bin/gcloud components install app-engine-java
-
 cd github/endpoints-framework-gradle-plugin
-./gradlew check
+./gradlew check prepareRelease
