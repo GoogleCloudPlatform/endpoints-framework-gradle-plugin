@@ -10,8 +10,8 @@ buildscript {
     }
   }
   dependencies {
-    classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
     classpath 'gradle.plugin.com.github.sherter.google-java-format:google-java-format-gradle-plugin:0.6'
+    classpath 'net.researchgate:gradle-release:2.6.0'
   }
 }
 
@@ -19,7 +19,7 @@ repositories {
   mavenCentral()
 }
 
-apply from: 'scripts/publishing.gradle'
+apply from: 'scripts/releasing.gradle'
 apply from: 'scripts/google-java-format.gradle'
 apply from: 'scripts/checkstyle.gradle'
 
@@ -49,6 +49,13 @@ jar {
         'Built-Date': new Date(),
         'Built-JDK': System.getProperty('java.version'),
         'Built-Gradle': gradle.gradleVersion
+  }
+}
+
+test {
+  testLogging {
+    showStandardStreams = true
+    exceptionFormat = 'full'
   }
 }
 
