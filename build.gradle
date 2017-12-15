@@ -1,27 +1,15 @@
-apply plugin: 'java'
-apply plugin: 'groovy'
-apply plugin: 'java-gradle-plugin'
-
-buildscript {
-  repositories {
-    jcenter()
-    maven {
-      url "https://plugins.gradle.org/m2"
-    }
-  }
-  dependencies {
-    classpath 'gradle.plugin.com.github.sherter.google-java-format:google-java-format-gradle-plugin:0.6'
-    classpath 'net.researchgate:gradle-release:2.6.0'
-  }
+plugins {
+  id 'java'
+  id 'groovy'
+  id 'maven'
+  id 'java-gradle-plugin'
+  id 'com.github.sherter.google-java-format' version '0.6'
+  id 'net.researchgate.release' version '2.6.0'
 }
 
 repositories {
   mavenCentral()
 }
-
-apply from: 'scripts/releasing.gradle'
-apply from: 'scripts/google-java-format.gradle'
-apply from: 'scripts/checkstyle.gradle'
 
 sourceCompatibility = JavaVersion.VERSION_1_7
 targetCompatibility = JavaVersion.VERSION_1_7
@@ -61,3 +49,90 @@ test {
 task wrapper(type: Wrapper) {
   gradleVersion = '4.0'
 }
+
+/* GOOGLE JAVA FORMAT */
+check.dependsOn verifyGoogleJavaFormat
+/* GOOGLE JAVA FORMAT */
+
+/* CHECKSTYLE */
+apply plugin: 'checkstyle'
+checkstyle {
+  toolVersion = "7.6.1"
+  // get the google_checks.xml file from the actual tool we're invoking
+  config = resources.text.fromArchiveEntry(configurations.checkstyle[0], 'google_checks.xml')
+  maxErrors = 0
+  maxWarnings = 0
+}
+/* CHECKSTYLE */
+
+/* RELEASING */
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+    classifier 'sources'
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    from javadoc.destinationDir
+    classifier = 'javadoc'
+}
+
+task writePom {
+    project.afterEvaluate {
+        def outputFile = file("$buildDir/pom/${project.name}-${project.version}.pom")
+        outputs.file outputFile
+
+        doLast {
+            pom {
+                project {
+                    name 'Endpoints Framework Gradle Plugin'
+                    description 'This Gradle plugin provides tasks and configurations to generate Google Cloud Endpoints Framework client code and discovery docs'
+                    url 'https://github.com/GoogleCloudPlatform/endpoints-framework-gradle-plugin'
+                    inceptionYear '2016'
+
+                    scm {
+                        url 'https://github.com/GoogleCloudPlatform/endpoints-framework-gradle-plugin'
+                        connection 'scm:https://github.com/GoogleCloudPlatform/endpoints-framework-gradle-plugin.git'
+                        developerConnection 'scm:git://github.com/GoogleCloudPlatform/endpoints-framework-gradle-plugin.git'
+                    }
+
+                    licenses {
+                        license {
+                            name 'The Apache Software License, Version 2.0'
+                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                            distribution 'repo'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id 'loosebazooka'
+                            name 'Appu Goundan'
+                            email 'appu@google.com'
+                        }
+                    }
+                }
+            }.writeTo(outputFile)
+        }
+    }
+}
+
+task prepareRelease(type: Copy) {
+    from jar
+    from sourceJar
+    from javadocJar
+    from writePom
+
+    into "${buildDir}/release-artifacts"
+
+    dependsOn build
+    dependsOn cleanPrepareRelease
+}
+
+// Release helper (git release commits and version updates)
+release {
+    tagTemplate = 'v$version'
+    git {
+        requireBranch = /^release_v\d+.*$/  //regex
+    }
+}
+/* RELEASING */
