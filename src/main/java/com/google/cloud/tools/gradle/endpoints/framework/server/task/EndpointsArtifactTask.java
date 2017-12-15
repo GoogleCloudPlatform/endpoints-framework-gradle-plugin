@@ -17,49 +17,59 @@
 package com.google.cloud.tools.gradle.endpoints.framework.server.task;
 
 import com.google.api.server.spi.tools.EndpointsTool;
-import com.google.api.server.spi.tools.GetOpenApiDocAction;
 import com.google.common.base.Strings;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
+import org.gradle.api.tasks.InputFiles;
+import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskAction;
 
-/** Endpoints task to download a openapi document from the endpoints service. */
-public class GenerateOpenApiDocsTask extends DefaultTask {
-
+public class EndpointsArtifactTask extends DefaultTask {
   // classesDir is only for detecting that the project has changed
-  private File classesDir;
+  private FileCollection classesDirs;
 
-  private File openApiDocDir;
-  private File webAppDir;
-  private List<String> serviceClasses;
+  private EndpointsTaskConfiguration endpointsTaskConfiguration;
+
+  private File outputDirectory;
   private String hostname;
   private String basePath;
+  private List<String> serviceClasses;
+  private File webAppDir;
 
-  @InputDirectory
-  public File getClassesDir() {
-    return classesDir;
+  @Internal
+  public EndpointsTaskConfiguration getEndpointsTaskConfiguration() {
+    return endpointsTaskConfiguration;
   }
 
-  public void setClassesDir(File classesDir) {
-    this.classesDir = classesDir;
+  public void setEndpointsTaskConfiguration(EndpointsTaskConfiguration endpointsTaskConfiguration) {
+    this.endpointsTaskConfiguration = endpointsTaskConfiguration;
+  }
+
+  @InputFiles
+  public FileCollection getClassesDir() {
+    return classesDirs;
+  }
+
+  public void setClassesDir(FileCollection classesDir) {
+    this.classesDirs = classesDir;
   }
 
   @OutputDirectory
-  public File getOpenApiDocDir() {
-    return openApiDocDir;
+  public File getOutputDirectory() {
+    return outputDirectory;
   }
 
-  public void setOpenApiDocDir(File openApiDocDir) {
-    this.openApiDocDir = openApiDocDir;
+  public void setOutputDirectory(File outputDirectory) {
+    this.outputDirectory = outputDirectory;
   }
 
   @InputDirectory
@@ -102,9 +112,7 @@ public class GenerateOpenApiDocsTask extends DefaultTask {
 
   /** Task entry point. */
   @TaskAction
-  void generateOpenApiDocs() throws Exception {
-    getProject().delete(openApiDocDir);
-    getProject().mkdir(openApiDocDir);
+  void generateEndpointsArtifact() throws Exception {
 
     String classpath =
         getProject()
@@ -115,30 +123,32 @@ public class GenerateOpenApiDocsTask extends DefaultTask {
             .getRuntimeClasspath()
             .getAsPath();
 
+    if (endpointsTaskConfiguration.needsClean()) {
+      getProject().delete(outputDirectory);
+      getProject().mkdir(outputDirectory);
+    }
+
     List<String> params =
-        new ArrayList<>(
-            Arrays.asList(
-                GetOpenApiDocAction.NAME,
-                "-o",
-                computeOpenApiDocPath(),
-                "-cp",
-                classpath,
-                "-w",
-                webAppDir.getPath()));
+        new ArrayList<>(endpointsTaskConfiguration.getActionSpecificParams(outputDirectory));
+
+    params.add("-cp");
+    params.add(classpath);
+
+    params.add("-w");
+    params.add(webAppDir.getPath());
+
+    System.out.println("hostname " + hostname);
     if (!Strings.isNullOrEmpty(hostname)) {
       params.add("-h");
       params.add(hostname);
     }
+    System.out.println("basepath " + basePath);
     if (!Strings.isNullOrEmpty(basePath)) {
       params.add("-p");
       params.add(basePath);
     }
-    params.addAll(getServiceClasses());
+    params.addAll(serviceClasses);
 
     new EndpointsTool().execute(params.toArray(new String[params.size()]));
-  }
-
-  private String computeOpenApiDocPath() {
-    return new File(openApiDocDir, "openapi.json").getPath();
   }
 }

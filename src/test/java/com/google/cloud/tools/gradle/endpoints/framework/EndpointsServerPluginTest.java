@@ -65,7 +65,7 @@ public class EndpointsServerPluginTest {
     BuildResult buildResult =
         new TestProject(testProjectDir.getRoot(), "projects/server")
             .hostname("my.hostname.com")
-            .gradleRunnerArguments("endpointsClientLibs")
+            .gradleRunnerArguments("endpointsClientLibs", "--stacktrace")
             .build();
 
     assertClientLibGeneration(
@@ -172,7 +172,7 @@ public class EndpointsServerPluginTest {
   public void testOpenApiDocs() throws IOException, URISyntaxException {
     BuildResult buildResult =
         new TestProject(testProjectDir.getRoot(), "projects/server")
-            .gradleRunnerArguments("endpointsOpenApiDocs")
+            .gradleRunnerArguments("endpointsOpenApiDocs", "--stacktrace")
             .build();
 
     assertOpenApiDocGeneration(DEFAULT_HOSTNAME, null);
