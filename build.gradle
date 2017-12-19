@@ -52,6 +52,7 @@ task wrapper(type: Wrapper) {
 
 /* GOOGLE JAVA FORMAT */
 check.dependsOn verifyGoogleJavaFormat
+// to auto-format run ./gradlew googleJavaFormat
 /* GOOGLE JAVA FORMAT */
 
 /* CHECKSTYLE */
