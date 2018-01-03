@@ -16,13 +16,14 @@
 
 package com.google.cloud.tools.gradle.endpoints.framework.server;
 
-import com.google.cloud.tools.gradle.endpoints.framework.server.task.GenerateClientLibsTask;
-import com.google.cloud.tools.gradle.endpoints.framework.server.task.GenerateDiscoveryDocsTask;
-import com.google.cloud.tools.gradle.endpoints.framework.server.task.GenerateOpenApiDocsTask;
-import java.io.File;
+import com.google.cloud.tools.gradle.endpoints.framework.server.task.ClientLibTaskConfiguration;
+import com.google.cloud.tools.gradle.endpoints.framework.server.task.DiscoveryDocTaskConfiguration;
+import com.google.cloud.tools.gradle.endpoints.framework.server.task.EndpointsArtifactTask;
+import com.google.cloud.tools.gradle.endpoints.framework.server.task.OpenApiDocTaskConfiguration;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.plugins.WarPluginConvention;
@@ -54,6 +55,7 @@ public class EndpointsServerPlugin implements Plugin<Project> {
     this.project = project;
 
     createExtension();
+    configureEndpointsArtifactTaskAdditionCallback();
     createDiscoverDocConfiguration();
     createGenerateDiscoveryDocsTask();
     createGenerateOpenApiDocsTask();
@@ -63,6 +65,44 @@ public class EndpointsServerPlugin implements Plugin<Project> {
   private void createExtension() {
     extension =
         project.getExtensions().create(SERVER_EXTENSION, EndpointsServerExtension.class, project);
+  }
+
+  // populate common configuration for all endpoints tasks
+  private void configureEndpointsArtifactTaskAdditionCallback() {
+    project
+        .getTasks()
+        .withType(EndpointsArtifactTask.class)
+        .whenTaskAdded(
+            new Action<EndpointsArtifactTask>() {
+              @Override
+              public void execute(final EndpointsArtifactTask task) {
+                final FileCollection classesDirs =
+                    project
+                        .getConvention()
+                        .getPlugin(JavaPluginConvention.class)
+                        .getSourceSets()
+                        .getByName(SourceSet.MAIN_SOURCE_SET_NAME)
+                        .getOutput()
+                        .getClassesDirs();
+
+                project.afterEvaluate(
+                    new Action<Project>() {
+                      @Override
+                      public void execute(Project project) {
+
+                        task.setClassesDir(classesDirs);
+                        task.setHostname(extension.getHostname());
+                        task.setBasePath(extension.getBasePath());
+                        task.setServiceClasses(extension.getServiceClasses());
+                        task.setWebAppDir(
+                            project
+                                .getConvention()
+                                .getPlugin(WarPluginConvention.class)
+                                .getWebAppDir());
+                      }
+                    });
+              }
+            });
   }
 
   private void createDiscoverDocConfiguration() {
@@ -86,10 +126,11 @@ public class EndpointsServerPlugin implements Plugin<Project> {
         .getTasks()
         .create(
             GENERATE_DISCOVERY_DOC_TASK,
-            GenerateDiscoveryDocsTask.class,
-            new Action<GenerateDiscoveryDocsTask>() {
+            EndpointsArtifactTask.class,
+            new Action<EndpointsArtifactTask>() {
               @Override
-              public void execute(final GenerateDiscoveryDocsTask genDiscoveryDocs) {
+              public void execute(final EndpointsArtifactTask genDiscoveryDocs) {
+                genDiscoveryDocs.setEndpointsTaskConfiguration(new DiscoveryDocTaskConfiguration());
                 genDiscoveryDocs.setDescription("Generate endpoints discovery documents");
                 genDiscoveryDocs.setGroup(APP_ENGINE_ENDPOINTS);
                 genDiscoveryDocs.dependsOn(JavaPlugin.CLASSES_TASK_NAME);
@@ -98,24 +139,8 @@ public class EndpointsServerPlugin implements Plugin<Project> {
                     new Action<Project>() {
                       @Override
                       public void execute(Project project) {
-                        File classesDir =
-                            project
-                                .getConvention()
-                                .getPlugin(JavaPluginConvention.class)
-                                .getSourceSets()
-                                .getByName(SourceSet.MAIN_SOURCE_SET_NAME)
-                                .getOutput()
-                                .getClassesDir();
-                        genDiscoveryDocs.setClassesDir(classesDir);
-                        genDiscoveryDocs.setDiscoveryDocDir(extension.getDiscoveryDocDir());
-                        genDiscoveryDocs.setHostname(extension.getHostname());
-                        genDiscoveryDocs.setBasePath(extension.getBasePath());
-                        genDiscoveryDocs.setServiceClasses(extension.getServiceClasses());
-                        genDiscoveryDocs.setWebAppDir(
-                            project
-                                .getConvention()
-                                .getPlugin(WarPluginConvention.class)
-                                .getWebAppDir());
+
+                        genDiscoveryDocs.setOutputDirectory(extension.getDiscoveryDocDir());
                       }
                     });
               }
@@ -127,10 +152,11 @@ public class EndpointsServerPlugin implements Plugin<Project> {
         .getTasks()
         .create(
             GENERATE_OPENAPI_DOC_TASK,
-            GenerateOpenApiDocsTask.class,
-            new Action<GenerateOpenApiDocsTask>() {
+            EndpointsArtifactTask.class,
+            new Action<EndpointsArtifactTask>() {
               @Override
-              public void execute(final GenerateOpenApiDocsTask genOpenApiDocs) {
+              public void execute(final EndpointsArtifactTask genOpenApiDocs) {
+                genOpenApiDocs.setEndpointsTaskConfiguration(new OpenApiDocTaskConfiguration());
                 genOpenApiDocs.setDescription("Generate endpoints Open API documents");
                 genOpenApiDocs.setGroup(APP_ENGINE_ENDPOINTS);
                 genOpenApiDocs.dependsOn(JavaPlugin.CLASSES_TASK_NAME);
@@ -139,24 +165,7 @@ public class EndpointsServerPlugin implements Plugin<Project> {
                     new Action<Project>() {
                       @Override
                       public void execute(Project project) {
-                        File classesDir =
-                            project
-                                .getConvention()
-                                .getPlugin(JavaPluginConvention.class)
-                                .getSourceSets()
-                                .getByName(SourceSet.MAIN_SOURCE_SET_NAME)
-                                .getOutput()
-                                .getClassesDir();
-                        genOpenApiDocs.setClassesDir(classesDir);
-                        genOpenApiDocs.setHostname(extension.getHostname());
-                        genOpenApiDocs.setBasePath(extension.getBasePath());
-                        genOpenApiDocs.setOpenApiDocDir(extension.getOpenApiDocDir());
-                        genOpenApiDocs.setServiceClasses(extension.getServiceClasses());
-                        genOpenApiDocs.setWebAppDir(
-                            project
-                                .getConvention()
-                                .getPlugin(WarPluginConvention.class)
-                                .getWebAppDir());
+                        genOpenApiDocs.setOutputDirectory(extension.getOpenApiDocDir());
                       }
                     });
               }
@@ -168,10 +177,11 @@ public class EndpointsServerPlugin implements Plugin<Project> {
         .getTasks()
         .create(
             GENERATE_CLINT_LIBS_TASK,
-            GenerateClientLibsTask.class,
-            new Action<GenerateClientLibsTask>() {
+            EndpointsArtifactTask.class,
+            new Action<EndpointsArtifactTask>() {
               @Override
-              public void execute(final GenerateClientLibsTask genClientLibs) {
+              public void execute(final EndpointsArtifactTask genClientLibs) {
+                genClientLibs.setEndpointsTaskConfiguration(new ClientLibTaskConfiguration());
                 genClientLibs.setDescription("Generate endpoints client libraries");
                 genClientLibs.setGroup(APP_ENGINE_ENDPOINTS);
                 genClientLibs.dependsOn(JavaPlugin.CLASSES_TASK_NAME);
@@ -180,24 +190,7 @@ public class EndpointsServerPlugin implements Plugin<Project> {
                     new Action<Project>() {
                       @Override
                       public void execute(Project project) {
-                        File classesDir =
-                            project
-                                .getConvention()
-                                .getPlugin(JavaPluginConvention.class)
-                                .getSourceSets()
-                                .getByName(SourceSet.MAIN_SOURCE_SET_NAME)
-                                .getOutput()
-                                .getClassesDir();
-                        genClientLibs.setClassesDir(classesDir);
-                        genClientLibs.setClientLibDir(extension.getClientLibDir());
-                        genClientLibs.setHostname(extension.getHostname());
-                        genClientLibs.setBasePath(extension.getBasePath());
-                        genClientLibs.setServiceClasses(extension.getServiceClasses());
-                        genClientLibs.setWebAppDir(
-                            project
-                                .getConvention()
-                                .getPlugin(WarPluginConvention.class)
-                                .getWebAppDir());
+                        genClientLibs.setOutputDirectory(extension.getClientLibDir());
                       }
                     });
               }
