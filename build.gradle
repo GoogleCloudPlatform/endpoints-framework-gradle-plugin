@@ -19,7 +19,7 @@ group = 'com.google.cloud.tools'
 dependencies {
   compile localGroovy()
   compile gradleApi()
-  compile "com.google.endpoints:endpoints-framework-tools:2.0.9"
+  compile "com.google.endpoints:endpoints-framework-tools:2.0.10"
   compile "com.google.guava:guava:19.0"
 
   testCompile 'commons-io:commons-io:2.4'
