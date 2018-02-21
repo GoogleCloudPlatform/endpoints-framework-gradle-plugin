@@ -37,30 +37,36 @@ public class EndpointsArtifactTask extends DefaultTask {
   // classesDir is only for detecting that the project has changed
   private FileCollection classesDirs;
 
-  private EndpointsTaskConfiguration endpointsTaskConfiguration;
+  // internal parameters for task configuration
+  private String command;
+  private boolean cleanBeforeRun;
+  private String outputLanguage;
+  private String outputBuildSystem;
+  private String outputFileName;
 
+  // user facing options
   private File outputDirectory;
   private String hostname;
   private String basePath;
   private List<String> serviceClasses;
   private File webAppDir;
 
-  @Internal
-  public EndpointsTaskConfiguration getEndpointsTaskConfiguration() {
-    return endpointsTaskConfiguration;
-  }
-
-  public void setEndpointsTaskConfiguration(EndpointsTaskConfiguration endpointsTaskConfiguration) {
-    this.endpointsTaskConfiguration = endpointsTaskConfiguration;
-  }
-
   @InputFiles
-  public FileCollection getClassesDir() {
+  public FileCollection getClassesDirs() {
     return classesDirs;
   }
 
-  public void setClassesDir(FileCollection classesDir) {
-    this.classesDirs = classesDir;
+  public void setClassesDirs(FileCollection classesDirs) {
+    this.classesDirs = classesDirs;
+  }
+
+  @Internal
+  public String getCommand() {
+    return command;
+  }
+
+  public void setCommand(String command) {
+    this.command = command;
   }
 
   @OutputDirectory
@@ -110,9 +116,61 @@ public class EndpointsArtifactTask extends DefaultTask {
     this.basePath = basePath;
   }
 
+  @Internal
+  public boolean isCleanBeforeRun() {
+    return cleanBeforeRun;
+  }
+
+  public void setCleanBeforeRun(boolean cleanBeforeRun) {
+    this.cleanBeforeRun = cleanBeforeRun;
+  }
+
+  @Internal
+  public String getOutputLanguage() {
+    return outputLanguage;
+  }
+
+  public void setOutputLanguage(String outputLanguage) {
+    this.outputLanguage = outputLanguage;
+  }
+
+  @Internal
+  public String getOutputBuildSystem() {
+    return outputBuildSystem;
+  }
+
+  public void setOutputBuildSystem(String outputBuildSystem) {
+    this.outputBuildSystem = outputBuildSystem;
+  }
+
+  @Internal
+  public String getOutputFileName() {
+    return outputFileName;
+  }
+
+  public void setOutputFileName(String outputFileName) {
+    this.outputFileName = outputFileName;
+  }
+
   /** Task entry point. */
   @TaskAction
   void generateEndpointsArtifact() throws Exception {
+
+    if (cleanBeforeRun) {
+      getProject().delete(outputDirectory);
+      getProject().mkdir(outputDirectory);
+    }
+
+    List<String> params = new ArrayList<>();
+
+    params.add(command);
+
+    params.add("-o");
+    if (!Strings.isNullOrEmpty(outputFileName)) {
+      params.add(new File(outputDirectory, outputFileName).getAbsolutePath());
+    } else {
+      params.add(outputDirectory.getAbsolutePath());
+    }
 
     String classpath =
         getProject()
@@ -123,26 +181,24 @@ public class EndpointsArtifactTask extends DefaultTask {
             .getRuntimeClasspath()
             .getAsPath();
 
-    if (endpointsTaskConfiguration.needsClean()) {
-      getProject().delete(outputDirectory);
-      getProject().mkdir(outputDirectory);
-    }
-
-    List<String> params =
-        new ArrayList<>(endpointsTaskConfiguration.getActionSpecificParams(outputDirectory));
-
     params.add("-cp");
     params.add(classpath);
 
     params.add("-w");
-    params.add(webAppDir.getPath());
+    params.add(webAppDir.getAbsolutePath());
 
-    System.out.println("hostname " + hostname);
+    if (!Strings.isNullOrEmpty(outputBuildSystem)) {
+      params.add("-bs");
+      params.add(outputBuildSystem);
+    }
+    if (!Strings.isNullOrEmpty(outputLanguage)) {
+      params.add("-l");
+      params.add(outputLanguage);
+    }
     if (!Strings.isNullOrEmpty(hostname)) {
       params.add("-h");
       params.add(hostname);
     }
-    System.out.println("basepath " + basePath);
     if (!Strings.isNullOrEmpty(basePath)) {
       params.add("-p");
       params.add(basePath);
