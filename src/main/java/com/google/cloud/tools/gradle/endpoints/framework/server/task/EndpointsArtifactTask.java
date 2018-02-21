@@ -185,7 +185,7 @@ public class EndpointsArtifactTask extends DefaultTask {
     params.add(classpath);
 
     params.add("-w");
-    params.add(webAppDir.getPath());
+    params.add(webAppDir.getAbsolutePath());
 
     if (!Strings.isNullOrEmpty(outputBuildSystem)) {
       params.add("-bs");
