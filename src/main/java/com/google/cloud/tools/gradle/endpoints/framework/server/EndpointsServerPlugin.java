@@ -16,10 +16,10 @@
 
 package com.google.cloud.tools.gradle.endpoints.framework.server;
 
-import com.google.cloud.tools.gradle.endpoints.framework.server.task.ClientLibTaskConfiguration;
-import com.google.cloud.tools.gradle.endpoints.framework.server.task.DiscoveryDocTaskConfiguration;
+import com.google.api.server.spi.tools.GetClientLibAction;
+import com.google.api.server.spi.tools.GetDiscoveryDocAction;
+import com.google.api.server.spi.tools.GetOpenApiDocAction;
 import com.google.cloud.tools.gradle.endpoints.framework.server.task.EndpointsArtifactTask;
-import com.google.cloud.tools.gradle.endpoints.framework.server.task.OpenApiDocTaskConfiguration;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -90,7 +90,7 @@ public class EndpointsServerPlugin implements Plugin<Project> {
                       @Override
                       public void execute(Project project) {
 
-                        task.setClassesDir(classesDirs);
+                        task.setClassesDirs(classesDirs);
                         task.setHostname(extension.getHostname());
                         task.setBasePath(extension.getBasePath());
                         task.setServiceClasses(extension.getServiceClasses());
@@ -130,8 +130,9 @@ public class EndpointsServerPlugin implements Plugin<Project> {
             new Action<EndpointsArtifactTask>() {
               @Override
               public void execute(final EndpointsArtifactTask genDiscoveryDocs) {
-                genDiscoveryDocs.setEndpointsTaskConfiguration(new DiscoveryDocTaskConfiguration());
+                genDiscoveryDocs.setCommand(GetDiscoveryDocAction.NAME);
                 genDiscoveryDocs.setDescription("Generate endpoints discovery documents");
+                genDiscoveryDocs.setCleanBeforeRun(true);
                 genDiscoveryDocs.setGroup(APP_ENGINE_ENDPOINTS);
                 genDiscoveryDocs.dependsOn(JavaPlugin.CLASSES_TASK_NAME);
 
@@ -156,10 +157,12 @@ public class EndpointsServerPlugin implements Plugin<Project> {
             new Action<EndpointsArtifactTask>() {
               @Override
               public void execute(final EndpointsArtifactTask genOpenApiDocs) {
-                genOpenApiDocs.setEndpointsTaskConfiguration(new OpenApiDocTaskConfiguration());
+                genOpenApiDocs.setCommand(GetOpenApiDocAction.NAME);
                 genOpenApiDocs.setDescription("Generate endpoints Open API documents");
+                genOpenApiDocs.setCleanBeforeRun(true);
                 genOpenApiDocs.setGroup(APP_ENGINE_ENDPOINTS);
                 genOpenApiDocs.dependsOn(JavaPlugin.CLASSES_TASK_NAME);
+                genOpenApiDocs.setOutputFileName("openapi.json");
 
                 project.afterEvaluate(
                     new Action<Project>() {
@@ -181,8 +184,11 @@ public class EndpointsServerPlugin implements Plugin<Project> {
             new Action<EndpointsArtifactTask>() {
               @Override
               public void execute(final EndpointsArtifactTask genClientLibs) {
-                genClientLibs.setEndpointsTaskConfiguration(new ClientLibTaskConfiguration());
+                genClientLibs.setCommand(GetClientLibAction.NAME);
                 genClientLibs.setDescription("Generate endpoints client libraries");
+                genClientLibs.setCleanBeforeRun(false);
+                genClientLibs.setOutputLanguage("java");
+                genClientLibs.setOutputBuildSystem("gradle");
                 genClientLibs.setGroup(APP_ENGINE_ENDPOINTS);
                 genClientLibs.dependsOn(JavaPlugin.CLASSES_TASK_NAME);
 
