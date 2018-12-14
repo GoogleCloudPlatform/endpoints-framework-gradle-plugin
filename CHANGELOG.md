@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+## 2.0.1
+### Changed
+- Update endpoints-framework-tools to version 2.2.0 ([#90](https://github.com/GoogleCloudPlatform/endpoints-framework-gradle-plugin/pull/90))
+
 ## 2.0.0
 ### Changed
 - Update endpoints-framework-tools to version 2.0.14 ([#83](https://github.com/GoogleCloudPlatform/endpoints-framework-gradle-plugin/pull/83))
