@@ -1,7 +1,7 @@
 language: java
 jdk:
   # don't let this fool you, we still build to target java7
-  - oraclejdk8
+  - openjdk8
 
 before_cache:
   - rm -rf $HOME/.gradle/caches/modules-2/modules-2.lock
