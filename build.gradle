@@ -3,7 +3,7 @@ plugins {
   id 'groovy'
   id 'maven'
   id 'java-gradle-plugin'
-  id 'com.github.sherter.google-java-format' version '0.9'
+  id 'com.github.sherter.google-java-format' version '0.6'
   id 'net.researchgate.release' version '2.6.0'
 }
 

@@ -13,7 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         # Don't let this fool you. We still build to target Java 7.
-        java: [8, 11]
+        java: [8]
     env:
       # for gradle
       TERM: dumb
