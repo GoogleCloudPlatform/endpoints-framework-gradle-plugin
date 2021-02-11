@@ -19,8 +19,8 @@ group = 'com.google.cloud.tools'
 dependencies {
   compile localGroovy()
   compile gradleApi()
-  compile "com.google.endpoints:endpoints-framework-tools:2.2.0"
   compile "com.google.guava:guava:30.1-jre"
+  compile "com.google.endpoints:endpoints-framework-tools:2.2.2"
 
   testCompile 'commons-io:commons-io:2.4'
   testCompile 'org.hamcrest:hamcrest-library:1.3'
