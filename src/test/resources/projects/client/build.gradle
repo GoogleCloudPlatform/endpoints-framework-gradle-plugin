@@ -15,7 +15,7 @@ endpointsClient {
   discoveryDocs = ['src/endpoints/testApi-v1-rest.discovery']
 }
 
-
 dependencies {
-  compile "com.google.api-client:google-api-client:+"
+  compile "com.google.http-client:google-http-client-gson:1.38.1"
+  compile "com.google.api-client:google-api-client:1.31.2"
 }
