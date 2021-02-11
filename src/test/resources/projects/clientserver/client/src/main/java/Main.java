@@ -17,16 +17,16 @@
 import com.example.testApi.TestApi;
 import com.example.testApi2.TestApi2;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 public class Main {
   public static void main(String[] args) throws GeneralSecurityException, IOException {
-    new TestApi.Builder(GoogleNetHttpTransport.newTrustedTransport(), new JacksonFactory(), null)
+    new TestApi.Builder(GoogleNetHttpTransport.newTrustedTransport(), new GsonFactory(), null)
         .build()
         .echo("xyz");
-    new TestApi2.Builder(GoogleNetHttpTransport.newTrustedTransport(), new JacksonFactory(), null)
+    new TestApi2.Builder(GoogleNetHttpTransport.newTrustedTransport(), new GsonFactory(), null)
         .build()
         .echo2("lmnop");
   }

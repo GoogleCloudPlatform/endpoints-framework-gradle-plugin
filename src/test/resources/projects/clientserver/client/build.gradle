@@ -13,5 +13,6 @@ targetCompatibility = 1.7
 
 dependencies {
   endpointsServer project(path: ":server", configuration: "endpoints")
-  compile "com.google.api-client:google-api-client:+"
+  compile "com.google.http-client:google-http-client-gson:1.38.1"
+  compile "com.google.api-client:google-api-client:1.31.2"
 }
