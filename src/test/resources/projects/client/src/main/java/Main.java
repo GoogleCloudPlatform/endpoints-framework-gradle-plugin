@@ -16,12 +16,12 @@
 
 import com.example.testApi.TestApi;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 public class Main {
   public static void main(String[] args) throws GeneralSecurityException, IOException {
-    new TestApi.Builder(GoogleNetHttpTransport.newTrustedTransport(), new JacksonFactory(), null);
+    new TestApi.Builder(GoogleNetHttpTransport.newTrustedTransport(), new GsonFactory(), null);
   }
 }
