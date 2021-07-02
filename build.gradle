@@ -46,8 +46,8 @@ test {
   }
 }
 
-task wrapper(type: Wrapper) {
-  gradleVersion = '4.0'
+task {
+  gradleVersion = '6.9'
 }
 
 /* GOOGLE JAVA FORMAT */
