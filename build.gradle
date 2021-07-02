@@ -46,10 +46,6 @@ test {
   }
 }
 
-task {
-  gradleVersion = '6.9'
-}
-
 /* GOOGLE JAVA FORMAT */
 check.dependsOn verifyGoogleJavaFormat
 // to auto-format run ./gradlew googleJavaFormat
