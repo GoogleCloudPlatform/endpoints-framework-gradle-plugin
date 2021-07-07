@@ -8,7 +8,14 @@ Android Studio users see [transition guide](ANDROID_README.md).
 
 # Requirements
 
-[Gradle](http://gradle.org) is required to build and run the plugin.
+[Gradle](http://gradle.org) is required to build and run the plugin. The table below shows the compatibility with Gradle version.
+
+<!-- TODO: Remove "(not yet released)" once we release a new version -->
+
+| Gradle version | endpoints-framework-gradle-plugin version |
+| ------------- | ------------- |
+| 7.x - | 2.2.0 or higher (not yet released) |
+| 4.x - 6.x | 2.1.0 or lower |
 
 # How to use
 
