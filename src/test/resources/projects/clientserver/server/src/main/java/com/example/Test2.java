@@ -22,11 +22,10 @@ import com.google.api.server.spi.config.ApiNamespace;
 import javax.inject.Named;
 
 @Api(
-  name = "testApi2",
-  version = "v1",
-  namespace =
-      @ApiNamespace(ownerDomain = "example.com", ownerName = "example.com", packagePath = "")
-)
+    name = "testApi2",
+    version = "v1",
+    namespace =
+        @ApiNamespace(ownerDomain = "example.com", ownerName = "example.com", packagePath = ""))
 public class Test2 {
 
   @ApiMethod(name = "echo2")
