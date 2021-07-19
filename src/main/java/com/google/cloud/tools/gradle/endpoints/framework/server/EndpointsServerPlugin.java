@@ -114,7 +114,9 @@ public class EndpointsServerPlugin implements Plugin<Project> {
             Zip discoveryDocArchive = project.getTasks().create("_zipDiscoveryDocs", Zip.class);
             discoveryDocArchive.dependsOn(GENERATE_DISCOVERY_DOC_TASK);
             discoveryDocArchive.from(extension.getDiscoveryDocDir());
-            discoveryDocArchive.setArchiveName(project.getName() + "-" + "discoveryDocs.zip");
+            discoveryDocArchive
+                .getArchiveFileName()
+                .set(project.getName() + "-" + "discoveryDocs.zip");
 
             project.getArtifacts().add(ARTIFACT_CONFIGURATION, discoveryDocArchive);
           }
